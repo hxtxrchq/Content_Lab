@@ -1,0 +1,49 @@
+/* Custom styles for ContentLab: Notion/Planable aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-main: #fbfbfa;
+  --bg-sidebar: #f4f4f0;
+  --bg-card: #ffffff;
+  --text-main: #2f2f2f;
+  --text-muted: #757573;
+  --border-color: #e4e4e0;
+  --accent-color: #0d9488; /* Teal */
+  --accent-hover: #0f766e;
+  --accent-light: #f0fdfa;
+  --status-idea: #9ca3af;
+  --status-process: #3b82f6;
+  --status-ready: #f59e0b;
+  --status-approved: #10b981;
+  --status-published: #8b5cf6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
