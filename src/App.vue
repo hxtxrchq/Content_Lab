@@ -1,11 +1,12 @@
 <template>
   <div class="app-container">
+    
     <!-- Top System Switch Bar: Role Switcher & Branding Personalization Toggle -->
     <div class="system-switch-bar">
       <div class="logo-area">
         <span class="logo-icon">✨</span>
         <span class="logo-text">ContentLab</span>
-        <span class="logo-badge">PROTOTIPO MVP</span>
+        <span class="logo-badge">WORKSPACE EDITORIAL</span>
       </div>
       
       <!-- Current Active Role Context Switcher -->
@@ -45,6 +46,7 @@
       
       <!-- SIDEBAR (Fine, Elegant, Less Heavy) -->
       <aside class="sidebar">
+        <!-- Client Active Brand Card Container -->
         <div class="sidebar-branding">
           <div class="brand-logo-container">
             <span class="brand-bullet" :style="{ backgroundColor: activeThemeColor }"></span>
@@ -52,7 +54,7 @@
           </div>
         </div>
 
-        <!-- Navigation Menu -->
+        <!-- Main Navigation Menu -->
         <nav class="sidebar-menu">
           <div class="menu-group">
             <button 
@@ -77,9 +79,9 @@
             </button>
           </div>
           
-          <!-- Clientes Header and List -->
+          <!-- Clientes Section (With visual layout context) -->
           <div class="menu-section">
-            <div class="menu-section-header">Marcas Activas</div>
+            <div class="menu-section-header">Marcas / Clientes</div>
             <div class="client-sublist">
               <button 
                 v-for="c in clients" 
@@ -95,12 +97,12 @@
 
           <!-- Global Strategy Cross-Calendar for PMs only -->
           <div v-if="currentViewMode === 'agency' && currentAgencyRole === 'pm'" class="menu-section">
-            <div class="menu-section-header">Estrategia</div>
+            <div class="menu-section-header">Estrategia Global</div>
             <button 
               @click="activeMainMenu = 'global_calendar'" 
               :class="['menu-btn', { active: activeMainMenu === 'global_calendar' }]"
             >
-              <span class="btn-icon">📅</span> Calendario Global
+              <span class="btn-icon">📅</span> Calendario Cruzado
             </button>
           </div>
           
@@ -120,7 +122,7 @@
           <div class="user-info">
             <div class="user-avatar">👤</div>
             <div>
-              <div class="user-name">Alonso CM</div>
+              <div class="user-name">Alonso Creative</div>
               <div class="user-role-label">
                 {{ currentViewMode === 'client' ? 'Cliente' : 'Agencia: ' + currentAgencyRole.toUpperCase() }}
               </div>
@@ -137,11 +139,11 @@
           <div class="view-header">
             <div>
               <span class="view-eyebrow">RESUMEN CREATIVO</span>
-              <h1 class="view-title">Dashboard de Contenido</h1>
-              <p class="view-subtitle">Foco editorial de publicaciones, storyboards y aprobaciones pendientes.</p>
+              <h1 class="view-title font-editorial">Planificación de la Semana</h1>
+              <p class="view-subtitle">Foco central en aprobaciones de contenido, storyboards y rodajes activos.</p>
             </div>
             <div class="header-actions" v-if="currentViewMode === 'agency'">
-              <span class="metric-summary-pill">Avance: {{ activePostsCount }} piezas en pipeline</span>
+              <span class="metric-summary-pill">Procesando: {{ activePostsCount }} piezas en pipeline</span>
             </div>
           </div>
 
@@ -153,10 +155,10 @@
               <div class="card premium-hero-card">
                 <div class="hero-card-header">
                   <div>
-                    <span class="hero-badge">NÚCLEO DEL PRODUCTO</span>
-                    <h2>Estructura de Contenido esta Semana</h2>
+                    <span class="hero-badge">ESTRUCTURA DE CONTENIDO ACTIVA</span>
+                    <h2>Revisión de Mockup Instagram</h2>
                   </div>
-                  <button @click="selectClient(clients[0])" class="btn btn-secondary btn-sm">Ver Pizarra Completa →</button>
+                  <button @click="selectClient(clients[0])" class="btn btn-secondary btn-sm">Abrir Pizarra Completa →</button>
                 </div>
                 
                 <div class="hero-preview-row">
@@ -170,7 +172,7 @@
                       <span class="mini-slide-badge">Slide 1/4</span>
                       <div class="mini-slide-content">
                         <strong>¿Eres fanático del picante real?</strong>
-                        <p>[Mockup: Alitas crujientes con humo animado]</p>
+                        <p class="desc-text">[Mockup: Alitas crujientes con humo animado]</p>
                       </div>
                     </div>
                     <div class="mini-ig-footer">
@@ -250,7 +252,7 @@
                 </div>
                 <p class="desc">Preparativos requeridos en tienda física:</p>
                 <ul class="mini-checklist">
-                  <li v-for="item in storeChecklist.slice(0, 2)" :key="item.id">
+                  <li v-for="item in storeChecklist" :key="item.id">
                     <input type="checkbox" v-model="item.completed" />
                     <span>{{ item.label.substring(0, 45) }}...</span>
                   </li>
@@ -269,13 +271,13 @@
           </div>
         </div>
 
-        <!-- MODULE: BRIEF & PILARES (Highly Visual Bars, Chips, Percentages) -->
+        <!-- MODULE: BRIEF & PILARES -->
         <div v-if="activeMainMenu === 'brief'" class="module-view">
           <div class="view-header">
             <div>
               <span class="view-eyebrow">DIRECCIÓN ESTRATÉGICA</span>
-              <h1 class="view-title">Briefing &amp; Pilares</h1>
-              <p class="view-subtitle">Formulario de estructura de marca y cálculo inteligente de mix de contenidos.</p>
+              <h1 class="view-title font-editorial">Briefing &amp; Pilares</h1>
+              <p class="view-subtitle">Cálculo de mix de contenidos inteligentes y definición de pilares de marca.</p>
             </div>
           </div>
 
@@ -391,7 +393,7 @@
           <div class="view-header">
             <div>
               <span class="view-eyebrow">REPOSITORIO CENTRAL</span>
-              <h1 class="view-title">Repositorio de Marca</h1>
+              <h1 class="view-title font-editorial">Repositorio de Marca</h1>
               <p class="view-subtitle">Guías estratégicas indispensables de cada cliente.</p>
             </div>
           </div>
@@ -416,7 +418,7 @@
           <div class="view-header">
             <div>
               <span class="view-eyebrow">AVISOS Y ALERTAS</span>
-              <h1 class="view-title">Notificaciones</h1>
+              <h1 class="view-title font-editorial">Notificaciones</h1>
               <p class="view-subtitle">Control de revisiones, comentarios y tareas de producción.</p>
             </div>
             <button @click="markAllNotificationsAsRead" class="btn btn-secondary btn-sm">Marcar todas como leídas</button>
@@ -466,7 +468,7 @@
           <div class="view-header">
             <div>
               <span class="view-eyebrow">CRONOGRAMA EDITORIAL</span>
-              <h1 class="view-title">Calendario Cruzado Multi-Marca</h1>
+              <h1 class="view-title font-editorial">Calendario Cruzado Multi-Marca</h1>
               <p class="view-subtitle">Control estratégico de publicaciones simultáneas de todas tus marcas.</p>
             </div>
           </div>
@@ -492,13 +494,13 @@
           </div>
         </div>
 
-        <!-- MODULE: CLIENT SPECIFIC VIEW (Clean Layout, Structured Content Focus) -->
+        <!-- MODULE: CLIENT SPECIFIC VIEW -->
         <div v-if="activeMainMenu === 'client' && selectedClient" class="module-view">
           <div class="client-detail-header">
             <div class="client-logo-title">
               <span class="client-detail-avatar">{{ selectedClient.avatar }}</span>
               <div>
-                <h1 class="client-detail-name">{{ selectedClient.name }}</h1>
+                <h1 class="client-detail-name font-editorial">{{ selectedClient.name }}</h1>
                 <p class="client-detail-niche">Rubro: {{ selectedClient.niche }}</p>
               </div>
             </div>
@@ -1400,7 +1402,7 @@ export default {
   transition: all 0.2s ease;
 }
 .menu-btn:hover {
-  background-color: rgba(26, 26, 24, 0.03);
+  background-color: rgba(29, 29, 26, 0.03);
   color: var(--text-main);
 }
 .menu-btn.active {
@@ -1451,7 +1453,7 @@ export default {
   transition: all 0.2s ease;
 }
 .client-menu-btn:hover {
-  background-color: rgba(26, 26, 24, 0.03);
+  background-color: rgba(29, 29, 26, 0.03);
   color: var(--text-main);
 }
 .client-menu-btn.active {
@@ -1479,7 +1481,7 @@ export default {
 .sidebar-user-footer {
   padding: 16px 20px;
   border-top: 1px solid var(--border-color);
-  background-color: rgba(26, 26, 24, 0.01);
+  background-color: rgba(29, 29, 26, 0.01);
 }
 .user-info {
   display: flex;
@@ -1533,6 +1535,11 @@ export default {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 2px;
+}
+.font-editorial {
+  font-family: var(--font-title);
+  color: var(--text-main);
+  font-weight: 700;
 }
 
 .metric-summary-pill {
@@ -2151,7 +2158,7 @@ export default {
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: rgba(26, 26, 24, 0.8);
+  background-color: rgba(29, 29, 26, 0.8);
   color: #fff;
   font-size: 0.65rem;
   padding: 2px 6px;
