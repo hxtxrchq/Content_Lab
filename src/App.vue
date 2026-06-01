@@ -1,52 +1,11 @@
 <template>
   <div class="app-container">
-    
-    <!-- Top System Switch Bar: Role Switcher & Branding Personalization Toggle -->
-    <div class="system-switch-bar">
-      <div class="logo-area">
-        <span class="logo-icon">✨</span>
-        <span class="logo-text">ContentLab</span>
-        <span class="logo-badge">WORKSPACE EDITORIAL</span>
-      </div>
-      
-      <!-- Current Active Role Context Switcher (For prototype testing) -->
-      <div class="controls-area">
-        <div class="role-selector">
-          <span class="selector-icon">👁️</span>
-          <select v-model="currentViewMode" class="select-input" @change="onViewModeChange">
-            <option value="agency">🏢 MODO AGENCIA</option>
-            <option value="client">👤 MODO CLIENTE (Simple)</option>
-          </select>
-        </div>
-
-        <div v-if="currentViewMode === 'agency'" class="agency-role-selector">
-          <span class="selector-icon">⚙️</span>
-          <select v-model="currentAgencyRole" class="select-input select-role">
-            <option value="pm">Director / PM</option>
-            <option value="cm">Content Manager</option>
-            <option value="designer">Diseñador</option>
-            <option value="video">Audiovisual</option>
-          </select>
-        </div>
-
-        <!-- Custom Agency Branding simulated selector -->
-        <div class="agency-branding-toggle">
-          <span class="selector-icon">🎨</span>
-          <select v-model="selectedBrandingLogo" class="select-input">
-            <option value="Standard">ContentLab Teal</option>
-            <option value="AgencyAlpha">Alpha Media (Naranja)</option>
-            <option value="CreativeStudio">Creative Studio (Púrpura)</option>
-          </select>
-        </div>
-      </div>
-    </div>
 
     <!-- Main Workspace Area -->
     <div class="workspace" :style="customThemeColors">
       
-      <!-- SIDEBAR (Fine, Elegant, Less Heavy) -->
+      <!-- SIDEBAR -->
       <aside class="sidebar">
-        <!-- Client Active Brand Card Container (Conditional on Mode) -->
         <div class="sidebar-branding">
           <div class="brand-logo-container">
             <span class="brand-bullet" :style="{ backgroundColor: activeThemeColor }"></span>
@@ -56,9 +15,9 @@
 
         <!-- CLIENT SIDEBAR MENU -->
         <nav v-if="currentViewMode === 'client'" class="sidebar-menu client-sidebar">
-          <!-- Vista Agencia switcher inside sidebar as shown in references -->
+          <!-- Vista Agencia Switcher in Sidebar -->
           <div class="sidebar-agency-toggle-container">
-            <button @click="currentViewMode = 'agency'" class="vista-agencia-btn">
+            <button @click="toggleViewMode" class="vista-agencia-btn">
               🔄 Vista Agencia
             </button>
           </div>
@@ -67,26 +26,26 @@
 
           <div class="menu-group">
             <button 
-              @click="activeClientTab = 'dashboard'" 
-              :class="['menu-btn', { active: activeClientTab === 'dashboard' }]"
+              @click="activeClientTab = 'tendencias'" 
+              :class="['menu-btn', { active: activeClientTab === 'tendencias' }]"
             >
-              <span class="btn-icon">㗊</span> Mi Dashboard
+              <span class="btn-icon">📈</span> Tendencias
             </button>
             
             <button 
-              @click="activeClientTab = 'contenido'" 
-              :class="['menu-btn', { active: activeClientTab === 'contenido' }]"
+              @click="activeClientTab = 'historial'" 
+              :class="['menu-btn', { active: activeClientTab === 'historial' }]"
             >
-              <span class="btn-icon">🥞</span> Mi Contenido
-            </button>
-            
-            <button 
-              @click="activeClientTab = 'sesiones'" 
-              :class="['menu-btn', { active: activeClientTab === 'sesiones' }]"
-            >
-              <span class="btn-icon">📷</span> Sesiones
+              <span class="btn-icon">🔄</span> Historial
             </button>
 
+            <button 
+              @click="activeClientTab = 'programacion'" 
+              :class="['menu-btn', { active: activeClientTab === 'programacion' }]"
+            >
+              <span class="btn-icon">🥞</span> Programación
+            </button>
+            
             <button 
               @click="activeClientTab = 'calendario'" 
               :class="['menu-btn', { active: activeClientTab === 'calendario' }]"
@@ -95,10 +54,17 @@
             </button>
 
             <button 
+              @click="activeClientTab = 'sesiones'" 
+              :class="['menu-btn', { active: activeClientTab === 'sesiones' }]"
+            >
+              <span class="btn-icon">📸</span> Sesiones
+            </button>
+
+            <button 
               @click="activeClientTab = 'nube'" 
               :class="['menu-btn', { active: activeClientTab === 'nube' }]"
             >
-              <span class="btn-icon">📁</span> Mis Archivos
+              <span class="btn-icon">📁</span> Nube
             </button>
 
             <button 
@@ -110,7 +76,6 @@
             </button>
           </div>
 
-          <!-- Active brand footer card exactly as the references -->
           <div class="sidebar-user-footer client-brand-footer mt-auto">
             <div class="user-info">
               <div class="client-avatar-circle">CL</div>
@@ -124,6 +89,12 @@
 
         <!-- AGENCY SIDEBAR MENU -->
         <nav v-else class="sidebar-menu">
+          <!-- Vista Cliente Switcher in Sidebar -->
+          <div class="sidebar-agency-toggle-container">
+            <button @click="toggleViewMode" class="vista-cliente-btn">
+              👤 Vista Cliente
+            </button>
+          </div>
           <div class="menu-group">
             <button 
               @click="activeMainMenu = 'dashboard'" 
@@ -157,21 +128,24 @@
             <div class="client-sublist">
               <div v-for="c in clients" :key="c.id" class="client-sidebar-item-container">
                 <button 
-                  @click="selectClient(c)"
+                  @click="clickAgencyClientCard(c)"
                   :class="['client-menu-btn', { active: selectedClient?.id === c.id && activeMainMenu === 'client' }]"
                 >
                   <span class="client-avatar">{{ c.avatar }}</span>
                   <span class="client-name">{{ c.name }}</span>
-                  <span class="chevron-ico">›</span>
+                  <span class="chevron-ico">{{ selectedClient?.id === c.id && activeMainMenu === 'client' && agencySubtabsOpen ? '▼' : '›' }}</span>
                 </button>
                 
-                <!-- Expanded active client sub-tabs menu for Agency side -->
-                <div v-if="selectedClient?.id === c.id && activeMainMenu === 'client'" class="active-client-subtabs">
-                  <button @click="activeClientTab = 'resumen'" :class="['subtab-link', { active: activeClientTab === 'resumen' }]">
-                    <span class="sub-link-icon">📊</span> Resumen
+                <!-- Expanded active client sub-tabs menu for Agency side (Collapsible & Beautiful) -->
+                <div v-if="selectedClient?.id === c.id && activeMainMenu === 'client' && agencySubtabsOpen" class="active-client-subtabs">
+                  <button @click="activeClientTab = 'tendencias'" :class="['subtab-link', { active: activeClientTab === 'tendencias' }]">
+                    <span class="sub-link-icon">📈</span> Tendencias
                   </button>
-                  <button @click="activeClientTab = 'contenido'" :class="['subtab-link', { active: activeClientTab === 'contenido' }]">
-                    <span class="sub-link-icon">👀</span> Estructura
+                  <button @click="activeClientTab = 'historial'" :class="['subtab-link', { active: activeClientTab === 'historial' }]">
+                    <span class="sub-link-icon">🔄</span> Historial
+                  </button>
+                  <button @click="activeClientTab = 'programacion'" :class="['subtab-link', { active: activeClientTab === 'programacion' }]">
+                    <span class="sub-link-icon">🥞</span> Programación
                   </button>
                   <button @click="activeClientTab = 'calendario'" :class="['subtab-link', { active: activeClientTab === 'calendario' }]">
                     <span class="sub-link-icon">📅</span> Calendario
@@ -181,9 +155,6 @@
                   </button>
                   <button @click="activeClientTab = 'nube'" :class="['subtab-link', { active: activeClientTab === 'nube' }]">
                     <span class="sub-link-icon">📁</span> Nube
-                  </button>
-                  <button @click="activeClientTab = 'programacion'" :class="['subtab-link', { active: activeClientTab === 'programacion' }]">
-                    <span class="sub-link-icon">🔗</span> Programación
                   </button>
                 </div>
               </div>
@@ -226,13 +197,13 @@
         </div>
       </aside>
 
-      <!-- CONTENT BODY (Composition Editorial) -->
+      <!-- CONTENT BODY -->
       <main class="content-body">
         
-        <!-- CLIENT MODE VIEW (Híbrido Editorial simple y limpio) -->
+        <!-- CLIENT MODE VIEW -->
         <div v-if="currentViewMode === 'client'" class="client-mode-view">
           
-          <!-- Top Bar inside Main View as shown in references -->
+          <!-- Top Bar inside Main View in Client Mode (No switcher bar at the top) -->
           <div class="client-top-bar">
             <button class="icon-btn-toggle" title="Toggle Sidebar">
               🗂️
@@ -240,7 +211,10 @@
             <span class="client-role-badge">
               <span class="green-dot"></span> Cliente
             </span>
-            <div class="top-bar-right">
+            <div class="top-bar-right" style="display: flex; align-items: center; gap: 16px;">
+              <button @click="showConnectionSettings = true" class="btn btn-secondary btn-sm" style="display: flex; align-items: center; gap: 6px;">
+                ⚙️ Conexiones
+              </button>
               <div class="bell-notification-container">
                 🔔
                 <span class="bell-badge">6</span>
@@ -248,8 +222,8 @@
             </div>
           </div>
 
-          <!-- CLIENT TAB: MI DASHBOARD -->
-          <div v-if="activeClientTab === 'dashboard'" class="client-dashboard-tab animate-fade-in">
+          <!-- CLIENT TAB: TENDENCIAS -->
+          <div v-if="activeClientTab === 'tendencias'" class="client-dashboard-tab animate-fade-in">
             <div class="view-header mb-4">
               <div>
                 <h1 class="view-title font-editorial">¡Hola, Wings &amp; Co.! 🍗</h1>
@@ -265,7 +239,7 @@
               <ul class="banner-list">
                 <li>
                   <span>• 2 piezas de contenido están listas para tu revisión y aprobación</span>
-                  <button @click="activeClientTab = 'contenido'" class="banner-btn">Aprobar ahora</button>
+                  <button @click="activeClientTab = 'programacion'" class="banner-btn">Aprobar ahora</button>
                 </li>
                 <li>
                   <span>• La sesión de fotos es el 16 de abril. Revisa los materiales que necesitas tener listos.</span>
@@ -279,7 +253,7 @@
             </div>
 
             <div class="dashboard-editorial-grid">
-              <!-- Left Column: Growth & Top Posts -->
+              <!-- Left Column -->
               <div class="editorial-main-panel">
                 
                 <!-- Account Evolution Section -->
@@ -333,7 +307,6 @@
                       <span>1K</span>
                     </div>
                     <div class="chart-body-wrapper">
-                      <!-- Curved line drawing SVG -->
                       <svg class="chart-svg" viewBox="0 0 700 150">
                         <path d="M 20 120 Q 110 90 200 100 T 380 60 T 560 30 T 680 15" fill="none" stroke="var(--accent-color)" stroke-width="3" />
                         <circle cx="20" cy="120" r="4" fill="var(--accent-color)" />
@@ -399,7 +372,7 @@
 
               </div>
 
-              <!-- Right Column: Weekly Schedule & Awaiting Approvals -->
+              <!-- Right Column -->
               <div class="editorial-side-panel">
                 
                 <!-- This Week Schedule -->
@@ -456,7 +429,6 @@
                       🚨 EDICIÓN LIMITADA 🌶️ 3 sabores nuevos que no puedes perderte. Solo por este mes.
                     </p>
                     
-                    <!-- Small interactive mockup view slide preview -->
                     <div class="mini-slide-preview-frame">
                       <div class="mini-slide-content-wrapper">
                         <span class="mini-badge-slide">Slide 1/3</span>
@@ -482,12 +454,12 @@
             </div>
           </div>
 
-          <!-- CLIENT TAB: MI CONTENIDO (Pizarra simple cronológica) -->
-          <div v-if="activeClientTab === 'contenido'" class="client-contenido-tab animate-fade-in">
+          <!-- CLIENT TAB: PROGRAMACIÓN -->
+          <div v-if="activeClientTab === 'programacion'" class="client-contenido-tab animate-fade-in">
             <div class="view-header mb-4">
               <div>
-                <h1 class="view-title font-editorial">Mi Contenido</h1>
-                <p class="view-subtitle">Revisa la estructura de tu contenido</p>
+                <h1 class="view-title font-editorial">Programación de Contenido</h1>
+                <p class="view-subtitle">Estructuración, revisión de ideas y mockups activos</p>
               </div>
             </div>
 
@@ -506,7 +478,6 @@
                   </div>
                   
                   <div class="post-card-right">
-                    <!-- Comment Counter if has comments -->
                     <span v-if="getCommentCount(g.post) > 0" class="comment-count-badge">
                       💬 {{ getCommentCount(g.post) }}
                     </span>
@@ -519,7 +490,7 @@
               </div>
             </div>
 
-            <!-- Interactive visual drawer / modal details for client approval & slide comments -->
+            <!-- Interactive Drawer for Client reviews -->
             <div v-if="clientSelectedDetailPost" class="detail-drawer-overlay" @click.self="clientSelectedDetailPost = null">
               <div class="detail-drawer-body">
                 <div class="drawer-header">
@@ -532,7 +503,6 @@
                 </div>
 
                 <div class="drawer-content-grid">
-                  <!-- Left side: Visual representation -->
                   <div class="drawer-visual-section">
                     
                     <!-- CAROUSEL MOCKUP -->
@@ -602,16 +572,13 @@
 
                   </div>
 
-                  <!-- Right side: Feedback & Actions -->
                   <div class="drawer-feedback-section">
-                    
-                    <!-- Quick Approvals Switch -->
                     <div class="quick-approval-actions card mb-3">
                       <h4>Flujo de Aprobación</h4>
                       <p class="mb-3 text-muted">¿Está lista esta pieza de contenido para programarse?</p>
                       <div class="action-buttons-flex">
                         <button @click="changePostStatus(clientSelectedDetailPost, 'Aprobado')" class="btn btn-primary w-100 mb-2">
-                          ✅ Aprobar Contenido
+                          ✅ Aprobado
                         </button>
                         <button @click="changePostStatus(clientSelectedDetailPost, 'En proceso')" class="btn btn-secondary w-100">
                           ✏️ Solicitar Cambios
@@ -619,7 +586,6 @@
                       </div>
                     </div>
 
-                    <!-- Comments Contextual Scroller -->
                     <div class="drawer-comments-box card">
                       <h4>💬 Observaciones</h4>
                       <p class="text-muted mb-2">Escribe tus comentarios para el equipo creativo de la agencia.</p>
@@ -657,7 +623,34 @@
 
           </div>
 
-          <!-- CLIENT TAB: SESIONES (Visual Cards matching mock reference) -->
+          <!-- CLIENT TAB: HISTORIAL -->
+          <div v-if="activeClientTab === 'historial'" class="client-historial-tab animate-fade-in">
+            <div class="view-header mb-4">
+              <div>
+                <h1 class="view-title font-editorial">Historial de Publicaciones</h1>
+                <p class="view-subtitle">Registro y analíticas de contenido publicado previamente</p>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <h3 class="block-title font-editorial">📁 Publicaciones Publicadas</h3>
+              <p class="text-muted mb-3">Historial acumulado de posts sincronizados y subidos automáticamente a redes sociales.</p>
+              
+              <div class="timeline-post-card card" style="border-left: 4px solid var(--status-published); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; padding: 16px;" v-for="post in selectedClient?.posts?.filter(p => p.status === 'Publicado' || p.status === 'Aprobado')" :key="post.id">
+                <div class="post-card-left" style="display: flex; align-items: center; gap: 12px;">
+                  <span class="badge badge-published" style="background-color: #16a34a; color: white;">Sincronizado</span>
+                  <div class="post-title-text" style="font-weight: 700;">{{ post.title }}</div>
+                  <div class="post-meta-sub" style="font-size: 0.78rem; color: var(--text-muted);">{{ post.type }} • Publicado en Abril</div>
+                </div>
+                <div class="post-card-right" style="display: flex; gap: 16px;">
+                  <span style="font-size: 0.82rem; color: #16a34a; font-weight: 700;">❤️ 198 Likes</span>
+                  <span style="font-size: 0.82rem; color: #2563eb; font-weight: 700;">💬 56 Comentarios</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLIENT TAB: SESIONES -->
           <div v-if="activeClientTab === 'sesiones'" class="client-sesiones-tab animate-fade-in">
             <div class="view-header mb-4">
               <div>
@@ -671,7 +664,6 @@
               <span class="sessions-count-badge">2</span>
             </div>
 
-            <!-- Single Expandable Session Card matching screenshot layout -->
             <div class="session-main-card card">
               <div class="session-card-header-row" @click="photoSessionOpen = !photoSessionOpen">
                 <div class="header-left">
@@ -687,10 +679,8 @@
                 </div>
               </div>
 
-              <!-- Collapsible Details Block -->
+              <!-- Collapsible Session details block -->
               <div v-if="photoSessionOpen" class="session-card-body-details">
-                
-                <!-- Quick Specs Row -->
                 <div class="session-specs-row">
                   <div class="spec-col-item">
                     <span class="spec-icon">📍</span>
@@ -715,7 +705,6 @@
                   </div>
                 </div>
 
-                <!-- Personas y Vestimenta -->
                 <div class="personas-vestimenta-block mt-4">
                   <h4 class="section-divider-title">👤 Personas y Vestimenta</h4>
                   
@@ -726,7 +715,6 @@
                         <span class="role-pill-badge">Modelo principal</span>
                       </div>
                       <h4 class="role-desc-title">Hombre joven 20-30 años, look casual</h4>
-                      
                       <ul class="role-bullet-list">
                         <li>
                           <span class="bullet-ico">👕</span>
@@ -751,7 +739,6 @@
                         <span class="role-pill-badge">Modelo secundario</span>
                       </div>
                       <h4 class="role-desc-title">Mujer joven 20-28 años</h4>
-                      
                       <ul class="role-bullet-list">
                         <li>
                           <span class="bullet-ico">👕</span>
@@ -772,7 +759,6 @@
                   </div>
                 </div>
 
-                <!-- Bottom References Row -->
                 <div class="session-bottom-refs-row mt-4">
                   <div class="ref-link-card">
                     <span class="ref-icon">👚</span> Refs. de Vestimenta
@@ -781,11 +767,10 @@
                     <span class="ref-icon">🖼️</span> Refs. de Persona Ideal
                   </div>
                 </div>
-
               </div>
             </div>
 
-            <!-- Client Responsibilities Checklist (Preparativos en tienda) -->
+            <!-- Client Responsibilities Checklist -->
             <div class="card checklist-shop-card mt-4">
               <h3 class="col-title-primary font-editorial">🏪 Responsabilidad de Tienda (Listado de Preparativos)</h3>
               <p class="col-subtitle">Lo que debes tener listo antes de que comience la sesión en el local.</p>
@@ -808,7 +793,7 @@
 
           </div>
 
-          <!-- CLIENT TAB: CALENDARIO (Exact layout mapping monthly calendar grid) -->
+          <!-- CLIENT TAB: CALENDARIO (Fully functional navigation calendar) -->
           <div v-if="activeClientTab === 'calendario'" class="client-calendario-tab animate-fade-in">
             <div class="view-header mb-4">
               <div>
@@ -827,11 +812,11 @@
 
             <!-- Calendar Grid Frame -->
             <div class="card calendar-grid-card">
-              <!-- Calendar Navigation Header -->
+              <!-- Calendar Navigation Header (Fully operational) -->
               <div class="calendar-nav-row">
-                <button class="nav-arrow-btn">◀</button>
-                <h2 class="month-title font-editorial">Abril de 2026</h2>
-                <button class="nav-arrow-btn">▶</button>
+                <button @click="previousCalendarMonth" class="nav-arrow-btn">◀ Anterior</button>
+                <h2 class="month-title font-editorial">{{ getCalendarMonthName }} de 2026</h2>
+                <button @click="nextCalendarMonth" class="nav-arrow-btn">Siguiente ▶</button>
               </div>
 
               <div class="calendar-table-container">
@@ -848,75 +833,20 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- Row 1 -->
-                    <tr>
-                      <td class="disabled-day"></td>
-                      <td class="disabled-day"></td>
-                      <td><div class="day-number">1</div></td>
-                      <td><div class="day-number">2</div></td>
-                      <td><div class="day-number">3</div></td>
-                      <td><div class="day-number">4</div></td>
-                      <td><div class="day-number">5</div></td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr>
-                      <td><div class="day-number">6</div></td>
-                      <td><div class="day-number">7</div></td>
-                      <td><div class="day-number">8</div></td>
-                      <td><div class="day-number">9</div></td>
-                      <td>
-                        <div class="day-number">10</div>
-                        <div class="calendar-event-tag tag-story">Reseña de cliente</div>
+                    <tr v-for="(week, wIdx) in getCalendarWeeks" :key="wIdx">
+                      <td 
+                        v-for="(day, dIdx) in week" 
+                        :key="dIdx" 
+                        :class="{ 'disabled-day': day.disabled, 'today-highlight': day.isToday }"
+                      >
+                        <div v-if="day.dayNumber" class="day-number" :class="{ 'circle-blue': day.isToday }">
+                          {{ day.dayNumber }}
+                        </div>
+                        
+                        <div v-for="ev in day.events" :key="ev.title" :class="['calendar-event-tag', ev.class]">
+                          {{ ev.title }}
+                        </div>
                       </td>
-                      <td><div class="day-number">11</div></td>
-                      <td><div class="day-number">12</div></td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr>
-                      <td class="today-highlight">
-                        <div class="day-number circle-blue">13</div>
-                      </td>
-                      <td><div class="day-number">14</div></td>
-                      <td>
-                        <div class="day-number">15</div>
-                        <div class="calendar-event-tag tag-carousel">¿Cuál es tu sabor favorito?</div>
-                      </td>
-                      <td><div class="day-number">16</div></td>
-                      <td>
-                        <div class="day-number">17</div>
-                        <div class="calendar-event-tag tag-reel">Viernes de Wings</div>
-                      </td>
-                      <td><div class="day-number">18</div></td>
-                      <td>
-                        <div class="day-number">19</div>
-                        <div class="calendar-event-tag tag-post">Combo Amigos 2x1</div>
-                      </td>
-                    </tr>
-                    <!-- Row 4 -->
-                    <tr>
-                      <td><div class="day-number">20</div></td>
-                      <td>
-                        <div class="day-number">21</div>
-                        <div class="calendar-event-tag tag-reel">Detrás de la cocina</div>
-                      </td>
-                      <td>
-                        <div class="day-number">22</div>
-                        <div class="calendar-event-tag tag-carousel">Nuevas alitas de temporada</div>
-                      </td>
-                      <td><div class="day-number">23</div></td>
-                      <td><div class="day-number">24</div></td>
-                      <td><div class="day-number">25</div></td>
-                      <td><div class="day-number">26</div></td>
-                    </tr>
-                    <!-- Row 5 -->
-                    <tr>
-                      <td><div class="day-number">27</div></td>
-                      <td><div class="day-number">28</div></td>
-                      <td><div class="day-number">29</div></td>
-                      <td><div class="day-number">30</div></td>
-                      <td class="disabled-day"></td>
-                      <td class="disabled-day"></td>
-                      <td class="disabled-day"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -931,12 +861,29 @@
                 <h1 class="view-title font-editorial">Mis Archivos</h1>
                 <p class="view-subtitle">Organización interna de archivos por cliente y mes</p>
               </div>
+              <div>
+                <input type="file" ref="clientFileInput" @change="onClientFileUploaded" style="display: none" />
+                <button @click="$refs.clientFileInput.click()" class="btn btn-primary">
+                  📤 Subir mi archivo
+                </button>
+              </div>
+            </div>
+
+            <!-- Drag & Drop simulated dropzone -->
+            <div class="card drag-drop-zone mb-4" @click="$refs.clientFileInput.click()">
+              <div class="drag-drop-placeholder">
+                <span class="upload-icon">📁</span>
+                <h3>Arrastra tus archivos aquí o haz clic para buscar</h3>
+                <p class="text-muted">Soporta imágenes, videos y documentos creativos. Máximo 100MB.</p>
+              </div>
             </div>
 
             <div class="card cloud-storage-card">
-              <div class="cloud-header">
-                <h3>📁 Almacenamiento Nube</h3>
-                <p class="cloud-desc">Accede a las referencias, videos y fotos finales cargadas.</p>
+              <div class="cloud-header-row mb-3">
+                <div>
+                  <h3>📁 Almacenamiento Nube</h3>
+                  <p class="cloud-desc">Accede y gestiona las referencias, videos y fotos finales cargadas.</p>
+                </div>
               </div>
 
               <div class="cloud-folder-tree">
@@ -945,15 +892,19 @@
                   <strong>Abril 2026</strong>
                 </div>
                 <div class="folder-contents">
-                  <div class="file-row">
-                    <span class="file-icon">🖼️</span>
-                    <span>foto_alitas_picantes_ref.jpg</span>
-                    <span class="file-size">1.2 MB</span>
+                  <div v-for="file in clientFiles" :key="file.id" class="file-row-flex">
+                    <div class="file-info-left">
+                      <span class="file-icon">{{ file.icon }}</span>
+                      <span class="file-name-text">{{ file.name }}</span>
+                    </div>
+                    <div class="file-info-right">
+                      <span class="file-size">{{ file.size }}</span>
+                      <span class="file-date">{{ file.date }}</span>
+                      <button @click="deleteClientFile(file.id)" class="btn-delete-file" title="Eliminar archivo">✕</button>
+                    </div>
                   </div>
-                  <div class="file-row">
-                    <span class="file-icon">🎥</span>
-                    <span>reel_sonido_crujiente_ref.mp4</span>
-                    <span class="file-size">14.8 MB</span>
+                  <div v-if="clientFiles.length === 0" class="empty-folder-text text-muted">
+                    No hay archivos en esta carpeta. Sube uno usando el botón superior.
                   </div>
                 </div>
               </div>
@@ -1006,10 +957,8 @@
               </div>
             </div>
 
-            <!-- EDITORIAL DASHBOARD COMPOSITION -->
             <div class="dashboard-editorial-grid">
-              
-              <!-- Left Side: Editorial Core Focus -->
+              <!-- Left Side -->
               <div class="editorial-main-panel">
                 <div class="card premium-hero-card card-primary">
                   <div class="hero-card-header">
@@ -1021,7 +970,6 @@
                   </div>
                   
                   <div class="hero-preview-row">
-                    <!-- Live Instagram Mockup Mini Frame -->
                     <div class="mini-ig-mockup">
                       <div class="mini-ig-header">
                         <span>🍗 wings_factory</span>
@@ -1039,7 +987,6 @@
                       </div>
                     </div>
 
-                    <!-- Quick Stats & Actions list -->
                     <div class="hero-quick-details">
                       <div class="quick-post-item">
                         <span class="post-type-lbl text-carousel">CARRUSEL</span>
@@ -1059,7 +1006,6 @@
                   </div>
                 </div>
 
-                <!-- Composition list of active processes -->
                 <div class="editorial-list-block card">
                   <h3 class="block-title font-editorial">Aprobaciones y Flujo Creativo Reciente</h3>
                   <div class="process-checklist-items">
@@ -1083,7 +1029,7 @@
                 </div>
               </div>
 
-              <!-- Right Side: Secondary Column -->
+              <!-- Right Side -->
               <div class="editorial-side-panel">
                 <div class="card simple-kpi-card mb-4">
                   <h3>Composición Global</h3>
@@ -1103,7 +1049,6 @@
                   </div>
                 </div>
 
-                <!-- Photoshoot Sessions Planer Preview -->
                 <div class="card sessions-preview-card">
                   <div class="sessions-card-header">
                     <h3>📸 Agenda de Sesión</h3>
@@ -1119,7 +1064,6 @@
                   <button @click="activeClientTab = 'sesiones'; selectClient(clients[0])" class="btn btn-secondary btn-xs mt-3 w-100">Ver Checklist Detallado →</button>
                 </div>
 
-                <!-- Direct link to active brief pillars -->
                 <div class="card brief-action-promo mt-4">
                   <h4>Generador de Briefing</h4>
                   <p>Crea pilares de contenido y distribuye el mix de publicaciones con IA.</p>
@@ -1191,7 +1135,6 @@
                 </button>
               </div>
 
-              <!-- AI Output pillars display inside brief new -->
               <div v-if="generatedPillarsResult" class="ai-pillars-result">
                 <h4 class="pillars-title">✨ Propuesta de Pilares de Contenido Generada con IA:</h4>
                 <div class="pillars-layout">
@@ -1247,17 +1190,17 @@
             </div>
           </div>
 
-          <!-- MODULE: REPOSITORIO DE MARCA (DATABASE) -->
+          <!-- MODULE: BASE DE MARCA (REPOSITORIO DE MARCA) -->
           <div v-if="activeMainMenu === 'database'" class="module-view">
             <div class="view-header">
               <div>
-                <h1 class="view-title font-editorial">Base de datos</h1>
+                <h1 class="view-title font-editorial">Base de Marca</h1>
                 <p class="view-subtitle">Repositorio central de información de marcas, briefs e historial</p>
               </div>
             </div>
 
             <div class="search-bar-container mt-2">
-              <input type="text" placeholder="🔍 Buscar en la base de datos..." class="form-control w-100" />
+              <input type="text" placeholder="🔍 Buscar en el repositorio..." class="form-control w-100" />
             </div>
 
             <div class="grid-repo mt-3">
@@ -1387,7 +1330,7 @@
             </div>
           </div>
 
-          <!-- MODULE: GLOBAL CALENDAR (CROSS EDITORIAL CALENDAR) -->
+          <!-- MODULE: GLOBAL CALENDAR -->
           <div v-if="activeMainMenu === 'global_calendar'" class="module-view">
             <div class="view-header">
               <div>
@@ -1484,8 +1427,11 @@
                 </div>
               </div>
 
-              <div class="client-header-actions">
-                <button @click="downloadClientPDF" class="btn btn-secondary">
+              <div class="client-header-actions" style="display: flex; gap: 8px;">
+                <button @click="showConnectionSettings = true" class="btn btn-secondary" style="display: flex; align-items: center; gap: 6px;">
+                  ⚙️ Conexiones
+                </button>
+                <button @click="downloadClientPDF" class="btn btn-primary">
                   📥 Descargar Estructuras PDF
                 </button>
               </div>
@@ -1503,8 +1449,8 @@
               </button>
             </div>
 
-            <!-- AGENCY VIEW SUBTAB: RESUMEN -->
-            <div v-if="activeClientTab === 'resumen'" class="subtab-view mt-3">
+            <!-- AGENCY VIEW SUBTAB: TENDENCIAS -->
+            <div v-if="activeClientTab === 'tendencias'" class="subtab-view mt-3">
               <div class="grid-resumen">
                 <div class="card">
                   <h3 class="card-title font-editorial">Resumen de Contrato</h3>
@@ -1550,11 +1496,11 @@
               </div>
             </div>
 
-            <!-- AGENCY VIEW SUBTAB: CONTENIDO (CORE EDITOR PIZARRA) -->
-            <div v-if="activeClientTab === 'contenido'" class="subtab-view mt-3">
+            <!-- AGENCY VIEW SUBTAB: PROGRAMACIÓN (CORE EDITOR PIZARRA) -->
+            <div v-if="activeClientTab === 'programacion'" class="subtab-view mt-3">
               <div class="contenido-grid">
                 
-                <!-- Left Column: Content list selector -->
+                <!-- Left Column -->
                 <div class="contenido-sidebar card">
                   <h4 class="sidebar-title">Estructuras de Contenido</h4>
                   <div class="posts-list">
@@ -1574,7 +1520,7 @@
                   </div>
                 </div>
 
-                <!-- Right Column: Interactive Editor Mockup Grid -->
+                <!-- Right Column -->
                 <div class="contenido-viewer" v-if="currentPost">
                   <div class="viewer-header card">
                     <div class="post-main-details">
@@ -1596,7 +1542,6 @@
                     <div class="carousel-preview-column">
                       <h3 class="viewer-section-title">Visualización de Slide</h3>
                       
-                      <!-- Instagram Slide Frame Mockup -->
                       <div class="instagram-frame">
                         <div class="ig-header">
                           <span class="ig-avatar">🍗</span>
@@ -1607,18 +1552,16 @@
                           <span class="ig-dots">•••</span>
                         </div>
 
-                        <!-- Slide Content body -->
                         <div class="ig-slide-body">
                           <div class="slide-indicator">{{ activeCarouselSlide + 1 }} / {{ currentPost.slides.length }}</div>
                           
                           <div class="slide-designer-canvas" :style="{ backgroundColor: activeCarouselSlideContent.bgColor || '#f3f4f6' }">
                             <h4 class="slide-canvas-hook">{{ activeCarouselSlideContent.hook }}</h4>
                             <p class="slide-canvas-concept">{{ activeCarouselSlideContent.concept }}</p>
-                            <div class="slide-bottom-guide">[Estructura Conceptual - No diseño final]</div>
+                            <div class="slide-bottom-guide">[Estructura Conceptual]</div>
                           </div>
                         </div>
 
-                        <!-- Instagram interactive action icons -->
                         <div class="ig-footer-actions">
                           <div class="ig-action-icons">
                             <span>❤️</span>
@@ -1635,7 +1578,6 @@
                         </div>
                       </div>
 
-                      <!-- Slide Navigator Buttons -->
                       <div class="slide-navigator">
                         <button @click="prevSlide" :disabled="activeCarouselSlide === 0" class="btn btn-secondary btn-sm">◀ Anterior</button>
                         <span class="slide-indicator-label">Slide {{ activeCarouselSlide + 1 }}</span>
@@ -1643,7 +1585,7 @@
                       </div>
                     </div>
 
-                    <!-- Comments and Feedback side panel for current Carousel Slide -->
+                    <!-- Comments and Feedback side panel -->
                     <div class="carousel-feedback-column card">
                       <h3 class="feedback-title">💬 Observaciones en Slide {{ activeCarouselSlide + 1 }}</h3>
                       <p class="feedback-desc">Comentarios del supervisor de cuentas para esta slide.</p>
@@ -1662,12 +1604,11 @@
                         </div>
                       </div>
 
-                      <!-- Post comments input form -->
                       <div class="comment-input-area">
                         <input 
                           type="text" 
                           v-model="newCommentText" 
-                          placeholder="Escribe tu observación para este slide..." 
+                          placeholder="Escribe tu observación..." 
                           class="form-control form-control-sm"
                           @keyup.enter="addCommentToActiveSlide"
                         />
@@ -1693,7 +1634,7 @@
                         <h5>📌 Referencia Visual</h5>
                         <div class="pinterest-ref-link">
                           <span class="pin-icon">📌</span>
-                          <a href="#" class="ref-link" @click.prevent="alert('Simulación: Abriendo referencia de Pinterest')">
+                          <a href="#" class="ref-link" @click.prevent="">
                             {{ currentPost.reelDetails.pinterestRef }}
                           </a>
                         </div>
@@ -1744,15 +1685,15 @@
                     </div>
                   </div>
 
-                  <!-- Creative Asset Uploader (Exclusivo Agencia) -->
+                  <!-- Creative Asset Uploader -->
                   <div class="card uploader-card mt-4">
-                    <h4 class="card-title">📤 Panel de Carga de Recursos Finales (Exclusivo Agencia)</h4>
-                    <p class="card-desc">Sube los diseños finales o videos terminados para la revisión definitiva del cliente.</p>
+                    <h4 class="card-title">📤 Panel de Carga de Recursos Finales</h4>
+                    <p class="card-desc">Sube los diseños finales o videos terminados.</p>
                     
                     <div class="upload-zone">
                       <div class="upload-placeholder">
                         <span>📁 Arrastra y suelta el archivo aquí o haz clic para buscar</span>
-                        <small class="upload-help">Formatos aceptados: PNG, JPG, MP4. Máximo 50MB.</small>
+                        <small class="upload-help">PNG, JPG, MP4. Máximo 50MB.</small>
                       </div>
                     </div>
                   </div>
@@ -1848,10 +1789,25 @@
 
             <!-- AGENCY VIEW SUBTAB: NUBE -->
             <div v-if="activeClientTab === 'nube'" class="subtab-view mt-3">
+              <div class="view-header mb-4">
+                <div>
+                  <h3 class="font-editorial">Mis Archivos (Agencia)</h3>
+                  <p class="text-muted">Organización interna de archivos por cliente y mes</p>
+                </div>
+                <div>
+                  <input type="file" ref="agencyFileInput" @change="onClientFileUploaded" style="display: none" />
+                  <button @click="$refs.agencyFileInput.click()" class="btn btn-primary">
+                    📤 Subir archivo
+                  </button>
+                </div>
+              </div>
+
               <div class="card cloud-storage-card">
-                <div class="cloud-header">
-                  <h3>📁 Almacenamiento Nube</h3>
-                  <p class="cloud-desc">Organización interna de archivos por cliente y mes.</p>
+                <div class="cloud-header-row mb-3">
+                  <div>
+                    <h3>📁 Almacenamiento Nube</h3>
+                    <p class="cloud-desc">Organización interna de archivos por cliente y mes.</p>
+                  </div>
                 </div>
 
                 <div class="cloud-folder-tree">
@@ -1860,39 +1816,87 @@
                     <strong>Abril 2026</strong>
                   </div>
                   <div class="folder-contents">
-                    <div class="file-row">
-                      <span class="file-icon">🖼️</span>
-                      <span>foto_alitas_picantes_ref.jpg</span>
-                      <span class="file-size">1.2 MB</span>
+                    <div v-for="file in clientFiles" :key="file.id" class="file-row-flex">
+                      <div class="file-info-left">
+                        <span class="file-icon">{{ file.icon }}</span>
+                        <span class="file-name-text">{{ file.name }}</span>
+                      </div>
+                      <div class="file-info-right">
+                        <span class="file-size">{{ file.size }}</span>
+                        <span class="file-date">{{ file.date }}</span>
+                        <button @click="deleteClientFile(file.id)" class="btn-delete-file" title="Eliminar archivo">✕</button>
+                      </div>
                     </div>
-                    <div class="file-row">
-                      <span class="file-icon">🎥</span>
-                      <span>reel_sonido_crujiente_ref.mp4</span>
-                      <span class="file-size">14.8 MB</span>
+                    <div v-if="clientFiles.length === 0" class="empty-folder-text text-muted">
+                      No hay archivos en esta carpeta. Sube uno usando el botón superior.
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </div> <!-- Closes activeClientTab === 'nube' -->
+          </div> <!-- Closes activeMainMenu === 'client' -->
+        </div> <!-- Closes agency-mode-view -->
+      </main> <!-- Closes content-body -->
+    </div> <!-- Closes workspace -->
 
-            <!-- AGENCY VIEW SUBTAB: PROGRAMACIÓN -->
-            <div v-if="activeClientTab === 'programacion'" class="subtab-view mt-3">
-              <div class="card text-center">
-                <h3>🔗 Conexión &amp; Programación de Redes</h3>
-                <p>Simulador de calendarización automática de posts en plataformas conectadas.</p>
-                
-                <div class="mt-4">
-                  <span class="badge badge-approved">Instagram Conectado</span>
-                  <span class="badge badge-idea ml-2">TikTok (Pendiente)</span>
-                </div>
+    <!-- CONNECTIONS CONFIGURATION MODAL -->
+    <div v-if="showConnectionSettings" class="detail-drawer-overlay" @click.self="showConnectionSettings = false" style="z-index: 2000; display: flex; align-items: center; justify-content: center;">
+      <div class="card" style="width: 500px; max-width: 90%; padding: 24px; border-radius: var(--radius-lg); position: relative; background: white; box-shadow: var(--shadow-lg);">
+        <button @click="showConnectionSettings = false" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+        <h2 class="font-editorial mb-2" style="margin-bottom: 8px;">⚙️ Configurar Conexiones</h2>
+        <p class="text-muted mb-4" style="font-size: 0.85rem; margin-bottom: 20px;">Vincula tus redes sociales para habilitar la auto-publicación directa del contenido cuando sea aprobado.</p>
+        
+        <div class="connections-list-panel" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Instagram -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.5rem;">📸</span>
+              <div>
+                <strong style="font-size: 0.9rem;">Instagram Business</strong>
+                <div style="font-size: 0.75rem; color: #16a34a;" v-if="connections.instagram">● Conectado como @wings_factory</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);" v-else>No conectado</div>
               </div>
             </div>
-
+            <button @click="connections.instagram = !connections.instagram" :class="['btn btn-sm', connections.instagram ? 'btn-secondary' : 'btn-primary']">
+              {{ connections.instagram ? 'Desconectar' : 'Conectar' }}
+            </button>
           </div>
 
+          <!-- TikTok -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.5rem;">🎵</span>
+              <div>
+                <strong style="font-size: 0.9rem;">TikTok Creator</strong>
+                <div style="font-size: 0.75rem; color: #16a34a;" v-if="connections.tiktok">● Conectado</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);" v-else>No conectado</div>
+              </div>
+            </div>
+            <button @click="connections.tiktok = !connections.tiktok" :class="['btn btn-sm', connections.tiktok ? 'btn-secondary' : 'btn-primary']">
+              {{ connections.tiktok ? 'Desconectar' : 'Conectar' }}
+            </button>
+          </div>
+
+          <!-- Facebook -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 1.5rem;">👥</span>
+              <div>
+                <strong style="font-size: 0.9rem;">Facebook Pages</strong>
+                <div style="font-size: 0.75rem; color: #16a34a;" v-if="connections.facebook">● Conectado</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);" v-else>No conectado</div>
+              </div>
+            </div>
+            <button @click="connections.facebook = !connections.facebook" :class="['btn btn-sm', connections.facebook ? 'btn-secondary' : 'btn-primary']">
+              {{ connections.facebook ? 'Desconectar' : 'Conectar' }}
+            </button>
+          </div>
         </div>
 
-      </main>
+        <div style="margin-top: 24px; text-align: right;">
+          <button @click="showConnectionSettings = false" class="btn btn-primary">Listo</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -1906,9 +1910,15 @@ export default {
       currentAgencyRole: 'pm', // pm, cm, designer, video
       selectedBrandingLogo: 'Standard',
       activeMainMenu: 'dashboard', // dashboard, brief, database, client, notifications
-      activeClientTab: 'dashboard', // default to dashboard tab
+      activeClientTab: 'tendencias', // default to tendencias tab
       activeBriefTab: 'new', // new, history
       
+      showConnectionSettings: false,
+      connections: { instagram: true, tiktok: false, facebook: false },
+
+      // Collapsible state for agency client menu subtabs
+      agencySubtabsOpen: true,
+
       // Toggle for session details in client view
       photoSessionOpen: true,
 
@@ -1921,6 +1931,14 @@ export default {
       clientSelectedDetailPost: null,
       clientNewCommentText: '',
       newCommentText: '',
+
+      // Fully Functional Calendar state
+      calendarMonthIndex: 3, // April by default
+      calendarYear: 2026,
+      calendarMonthsNames: [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ],
 
       // New Brief Form State
       newBrief: {
@@ -2089,6 +2107,25 @@ export default {
         { id: 1, type: 'agency', msg: 'Diseñador subió mockup final para post "Las 3 salsas más picantes".', time: 'Hace 10 min', read: false },
         { id: 2, type: 'client', msg: 'Cliente solicitó cambios en slide 1 del post de Alitas.', time: 'Hace 1 hora', read: false },
         { id: 3, type: 'agency', msg: 'Recordatorio: Subir storyboard de Reel para aprobación antes de la sesión.', time: 'Hace 3 horas', read: true }
+      ],
+      clientFiles: [
+        { id: 'f-1', name: 'foto_alitas_picantes_ref.jpg', size: '1.2 MB', date: '01/06/2026', type: 'image', icon: '🖼️' },
+        { id: 'f-2', name: 'reel_sonido_crujiente_ref.mp4', size: '14.8 MB', date: '01/06/2026', type: 'video', icon: '🎥' }
+      ],
+
+      // Calendar events static collection for dynamic monthly binding
+      calendarEvents: [
+        { day: 10, month: 3, title: 'Reseña de cliente', class: 'tag-story' },
+        { day: 15, month: 3, title: '¿Cuál es tu sabor favorito?', class: 'tag-carousel' },
+        { day: 17, month: 3, title: 'Viernes de Wings', class: 'tag-reel' },
+        { day: 19, month: 3, title: 'Combo Amigos 2x1', class: 'tag-post' },
+        { day: 21, month: 3, title: 'Detrás de la cocina', class: 'tag-reel' },
+        { day: 22, month: 3, title: 'Nuevas alitas de temporada', class: 'tag-carousel' },
+        // Add some mock items for next/previous months
+        { day: 5, month: 2, title: 'Reel: Inauguración local', class: 'tag-reel' },
+        { day: 20, month: 2, title: 'Post: Promo Marzo', class: 'tag-post' },
+        { day: 1, month: 4, title: 'Sesión Fotos Mayo', class: 'tag-carousel' },
+        { day: 12, month: 4, title: 'Lanzamiento Salsa Secreta', class: 'tag-story' }
       ]
     }
   },
@@ -2100,21 +2137,21 @@ export default {
       if (this.selectedBrandingLogo === 'CreativeStudio') {
         return { '--accent-color': '#8b5cf6', '--accent-hover': '#7c3aed' };
       }
-      return { '--accent-color': '#0d9488', '--accent-hover': '#0f766e' };
+      return { '--accent-color': '#6366f1', '--accent-hover': '#4f46e5' };
     },
     activeThemeColor() {
       if (this.selectedBrandingLogo === 'AgencyAlpha') return '#f97316';
       if (this.selectedBrandingLogo === 'CreativeStudio') return '#8b5cf6';
-      return '#0d9488';
+      return '#6366f1';
     },
     clientTabsFiltered() {
       return [
-        { id: 'resumen', label: '📊 Resumen' },
-        { id: 'contenido', label: '👀 Estructura & Mockups' },
+        { id: 'tendencias', label: '📈 Tendencias' },
+        { id: 'historial', label: '🔄 Historial' },
+        { id: 'programacion', label: '🥞 Programación' },
         { id: 'calendario', label: '📅 Calendario' },
-        { id: 'sesiones', label: '📸 Sesiones & Checklist' },
-        { id: 'nube', label: '📁 Nube' },
-        { id: 'programacion', label: '🔗 Programación' }
+        { id: 'sesiones', label: '📸 Sesiones' },
+        { id: 'nube', label: '📁 Nube' }
       ]
     },
     currentPost() {
@@ -2135,7 +2172,6 @@ export default {
       const activeClient = this.clients[0]; // Wings & Co.
       if (!activeClient || !activeClient.posts) return [];
       
-      // Return sorted timeline mapping
       return activeClient.posts.map(p => ({
         date: p.date,
         post: p
@@ -2151,22 +2187,89 @@ export default {
         };
         return getDayVal(a.date) - getDayVal(b.date);
       });
+    },
+
+    // Dynamic month binding for fully functional calendar navigation
+    getCalendarMonthName() {
+      return this.calendarMonthsNames[this.calendarMonthIndex];
+    },
+    getCalendarWeeks() {
+      // Start day index of each month in 2026 (0 = Monday, 6 = Sunday)
+      const monthStartsOnDay = [6, 2, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
+      const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      
+      const startIdx = monthStartsOnDay[this.calendarMonthIndex];
+      const length = monthLengths[this.calendarMonthIndex];
+      
+      const days = [];
+      
+      // Empty cells before month start
+      for (let i = 0; i < startIdx; i++) {
+        days.push({ dayNumber: '', disabled: true, events: [] });
+      }
+      
+      // Actual days
+      for (let d = 1; d <= length; d++) {
+        const events = this.calendarEvents.filter(e => e.day === d && e.month === this.calendarMonthIndex);
+        days.push({
+          dayNumber: d,
+          disabled: false,
+          isToday: d === 13 && this.calendarMonthIndex === 3, // April 13 today highlight
+          events
+        });
+      }
+      
+      // Chunk into weeks (7 days each)
+      const weeks = [];
+      let currentWeek = [];
+      
+      days.forEach(day => {
+        currentWeek.push(day);
+        if (currentWeek.length === 7) {
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
+      });
+      
+      // Remaining cells in the last week
+      if (currentWeek.length > 0) {
+        while (currentWeek.length < 7) {
+          currentWeek.push({ dayNumber: '', disabled: true, events: [] });
+        }
+        weeks.push(currentWeek);
+      }
+      
+      return weeks;
     }
   },
   methods: {
     onViewModeChange() {
       if (this.currentViewMode === 'client') {
         this.selectedClient = this.clients[0];
-        this.activeClientTab = 'dashboard';
+        this.activeClientTab = 'tendencias';
       } else {
         this.activeMainMenu = 'dashboard';
-        this.activeClientTab = 'resumen';
+        this.activeClientTab = 'tendencias';
+      }
+    },
+    toggleViewMode() {
+      // Seamlessly switch back and forth
+      this.currentViewMode = this.currentViewMode === 'client' ? 'agency' : 'client';
+      this.onViewModeChange();
+    },
+    clickAgencyClientCard(client) {
+      if (this.selectedClient?.id === client.id && this.activeMainMenu === 'client') {
+        // Toggle/Collapse subtabs if clicked again
+        this.agencySubtabsOpen = !this.agencySubtabsOpen;
+      } else {
+        this.selectClient(client);
+        this.agencySubtabsOpen = true;
       }
     },
     selectClient(client) {
       this.selectedClient = client;
       this.activeMainMenu = 'client';
-      this.activeClientTab = 'resumen';
+      this.activeClientTab = 'tendencias';
       if (client.posts && client.posts.length > 0) {
         this.activePostId = client.posts[0].id;
         this.activeCarouselSlide = 0;
@@ -2291,7 +2394,7 @@ export default {
       const activeClient = this.clients[0];
       const post = activeClient.posts.find(p => p.id === postId);
       if (post) {
-        this.activeClientTab = 'contenido';
+        this.activeClientTab = 'programacion';
         this.openPostDetail(post);
       }
     },
@@ -2356,6 +2459,50 @@ export default {
       if (status === 'En proceso') return 'badge-process';
       if (status === 'Listo') return 'badge-ready';
       return 'badge-idea';
+    },
+
+    // Calendar month switcher actions
+    previousCalendarMonth() {
+      if (this.calendarMonthIndex > 0) {
+        this.calendarMonthIndex--;
+      } else {
+        this.calendarMonthIndex = 11;
+      }
+    },
+    nextCalendarMonth() {
+      if (this.calendarMonthIndex < 11) {
+        this.calendarMonthIndex++;
+      } else {
+        this.calendarMonthIndex = 0;
+      }
+    },
+
+    // Interactive files upload logic
+    onClientFileUploaded(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      const isVideo = file.type.includes('video') || file.name.endsWith('.mp4');
+      const isImage = file.type.includes('image') || file.name.endsWith('.jpg') || file.name.endsWith('.png');
+      this.clientFiles.push({
+        id: 'f-' + Date.now(),
+        name: file.name,
+        size: `${sizeMB} MB`,
+        date: new Date().toLocaleDateString(),
+        type: isVideo ? 'video' : isImage ? 'image' : 'doc',
+        icon: isVideo ? '🎥' : isImage ? '🖼️' : '📄'
+      });
+      this.notifications.unshift({
+        id: Date.now(),
+        type: 'client',
+        msg: `Sucesó de Carga: Has subido el archivo "${file.name}" con éxito.`,
+        time: 'Ahora mismo',
+        read: false
+      });
+      alert(`¡Archivo "${file.name}" subido con éxito!`);
+    },
+    deleteClientFile(fileId) {
+      this.clientFiles = this.clientFiles.filter(f => f.id !== fileId);
     }
   },
   mounted() {
@@ -2455,9 +2602,9 @@ export default {
   overflow: hidden;
 }
 
-/* Sidebar styling */
+/* Sidebar styling - Wider for better subtab layouts */
 .sidebar {
-  width: 230px;
+  width: 260px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   display: flex;
@@ -2505,12 +2652,12 @@ export default {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 14px;
+  padding: 11px 16px;
   background: none;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
   font-family: inherit;
   color: var(--text-muted);
@@ -2535,12 +2682,12 @@ export default {
 }
 .vista-agencia-btn {
   width: 100%;
-  padding: 10px;
+  padding: 11px;
   border: none;
   background-color: #ede9fe;
   color: #5b21b6;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
@@ -2553,8 +2700,28 @@ export default {
   background-color: #ddd6fe;
 }
 
+.vista-cliente-btn {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  background-color: #ede9fe;
+  color: #5b21b6;
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+.vista-cliente-btn:hover {
+  background-color: #ddd6fe;
+}
+
 .menu-section-title {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #a1a19a;
@@ -2585,6 +2752,23 @@ export default {
   font-size: 0.75rem;
 }
 
+.menu-sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.ver-todos-link {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
 .menu-section {
   display: flex;
   flex-direction: column;
@@ -2597,8 +2781,6 @@ export default {
   text-transform: uppercase;
   color: #a1a19a;
   letter-spacing: 0.5px;
-  padding-left: 12px;
-  margin-bottom: 2px;
 }
 
 .client-sublist {
@@ -2610,14 +2792,13 @@ export default {
 .client-menu-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 11px 16px;
   background: none;
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   border-radius: var(--radius-md);
   text-align: left;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   font-weight: 600;
   font-family: inherit;
   color: var(--text-muted);
@@ -2631,9 +2812,14 @@ export default {
 .client-menu-btn.active {
   background-color: #ffffff;
   color: var(--text-main);
-  font-weight: 700;
+  font-weight: 800;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--text-main);
+}
+.chevron-ico {
+  margin-left: auto;
+  font-size: 1rem;
+  color: var(--text-muted);
 }
 
 .client-avatar {
@@ -3381,11 +3567,18 @@ export default {
   margin-bottom: 16px;
 }
 .nav-arrow-btn {
-  background: none;
-  border: none;
-  font-size: 1rem;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--text-main);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.nav-arrow-btn:hover {
+  background-color: #fafaf9;
 }
 .month-title {
   font-size: 1.15rem;
@@ -3408,7 +3601,7 @@ export default {
 }
 .calendar-table-grid td {
   border: 1px solid var(--border-color);
-  height: 80px;
+  height: 85px;
   width: 14%;
   padding: 6px;
   vertical-align: top;
@@ -3440,6 +3633,9 @@ export default {
   border-radius: 4px;
   margin-top: 4px;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tag-story { background-color: #fef3c7; color: #d97706; }
 .tag-carousel { background-color: #f3e8ff; color: #6b21a8; }
@@ -4152,4 +4348,125 @@ export default {
 .text-center { text-align: center; }
 .w-100 { width: 100%; }
 .mt-auto { margin-top: auto; }
+
+/* Expanded Client Sub-Tabs Style */
+.active-client-subtabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+  background-color: rgba(29, 29, 26, 0.02);
+  border-radius: var(--radius-md);
+  margin: 4px 12px 10px 12px;
+  border: 1px solid var(--border-color);
+}
+.subtab-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.subtab-link:hover {
+  background-color: #fafaf9;
+  border-color: var(--text-muted);
+}
+.subtab-link.active {
+  background-color: var(--accent-light);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.sub-link-icon {
+  font-size: 0.95rem;
+}
+
+/* Interactive Drag & Drop / Uploader block */
+.drag-drop-zone {
+  border: 2px dashed var(--border-color);
+  background-color: #fafaf9;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.drag-drop-zone:hover {
+  background-color: #f4f4f0;
+  border-color: var(--accent-color);
+}
+.drag-drop-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.upload-icon {
+  font-size: 2.2rem;
+}
+
+.cloud-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* File list flex layout */
+.file-row-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  transition: all 0.2s;
+}
+.file-row-flex:hover {
+  border-color: var(--text-muted);
+}
+.file-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.file-name-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.file-info-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.file-size, .file-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.btn-delete-file {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.btn-delete-file:hover {
+  background-color: #fee2e2;
+}
+.empty-folder-text {
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 20px;
+}
 </style>
