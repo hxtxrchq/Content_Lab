@@ -152,13 +152,13 @@
             
             <!-- Left Side: Editorial Core Focus (Content, Mockups, Approvals) -->
             <div class="editorial-main-panel">
-              <div class="card premium-hero-card">
+              <div class="card premium-hero-card card-primary">
                 <div class="hero-card-header">
                   <div>
                     <span class="hero-badge">ESTRUCTURA DE CONTENIDO ACTIVA</span>
                     <h2>Revisión de Mockup Instagram</h2>
                   </div>
-                  <button @click="selectClient(clients[0])" class="btn btn-secondary btn-sm">Abrir Pizarra Completa →</button>
+                  <button @click="selectClient(clients[0])" class="btn btn-secondary btn-sm">Ver Pizarra Completa →</button>
                 </div>
                 
                 <div class="hero-preview-row">
@@ -205,7 +205,7 @@
                 <h3 class="block-title">Aprobaciones y Flujo Creativo Reciente</h3>
                 <div class="process-checklist-items">
                   <div class="process-item-row">
-                    <span class="process-status badge-process">Listo</span>
+                    <span class="process-status badge badge-ready">Listo</span>
                     <div class="process-info">
                       <strong>Wings Factory - Carrusel "3 salsas más picantes"</strong>
                       <p>Esperando aprobación del Cliente | Copy &amp; Estructura listos</p>
@@ -213,7 +213,7 @@
                     <span class="process-time">Hace 10m</span>
                   </div>
                   <div class="process-item-row">
-                    <span class="process-status badge-inprocess">En proceso</span>
+                    <span class="process-status badge badge-process">En proceso</span>
                     <div class="process-info">
                       <strong>Wings Factory - Reel "Sonido del crujido"</strong>
                       <p>Diseño y audiovisual agregando referencias visuales de Pinterest</p>
@@ -281,17 +281,17 @@
             </div>
           </div>
 
-          <div class="brief-tabs">
-            <button @click="activeBriefTab = 'new'" :class="['brief-tab-btn', { active: activeBriefTab === 'new' }]">
+          <div class="tabs-container">
+            <button @click="activeBriefTab = 'new'" :class="['tab-item', { active: activeBriefTab === 'new' }]">
               📝 Llenar Nuevo Brief
             </button>
-            <button @click="activeBriefTab = 'history'" :class="['brief-tab-btn', { active: activeBriefTab === 'history' }]">
+            <button @click="activeBriefTab = 'history'" :class="['tab-item', { active: activeBriefTab === 'history' }]">
               📁 Historial de Briefs ({{ briefsHistory.length }})
             </button>
           </div>
 
           <!-- NEW BRIEF TAB -->
-          <div v-if="activeBriefTab === 'new'" class="card brief-form-card">
+          <div v-if="activeBriefTab === 'new'" class="card brief-form-card mt-3">
             <h3 class="card-title">Completa el perfil de tu marca</h3>
             
             <div class="form-grid">
@@ -367,12 +367,12 @@
           </div>
 
           <!-- BRIEF HISTORY TAB -->
-          <div v-if="activeBriefTab === 'history'" class="brief-history-list">
+          <div v-if="activeBriefTab === 'history'" class="brief-history-list mt-3">
             <div v-for="b in briefsHistory" :key="b.id" class="card history-brief-item">
               <div class="history-item-header">
                 <div>
                   <h4>📝 Briefing: {{ b.clientName }}</h4>
-                  <span class="badge badge-neutral">{{ b.niche.toUpperCase() }}</span>
+                  <span class="badge badge-idea">{{ b.niche.toUpperCase() }}</span>
                 </div>
                 <div class="history-date">{{ b.date }}</div>
               </div>
@@ -513,20 +513,20 @@
             </div>
           </div>
 
-          <!-- Client Submenu Tabs -->
-          <div class="client-tabs">
+          <!-- Client Submenu Tabs (Integrated UI kit tabs) -->
+          <div class="tabs-container mb-3">
             <button 
               v-for="tab in clientTabsFiltered" 
               :key="tab.id"
               @click="activeClientTab = tab.id"
-              :class="['client-tab-btn', { active: activeClientTab === tab.id }]"
+              :class="['tab-item', { active: activeClientTab === tab.id }]"
             >
               {{ tab.label }}
             </button>
           </div>
 
           <!-- SUBTAB: RESUMEN -->
-          <div v-if="activeClientTab === 'resumen'" class="subtab-view">
+          <div v-if="activeClientTab === 'resumen'" class="subtab-view mt-3">
             <div class="grid-resumen">
               <div class="card">
                 <h3 class="card-title">Resumen de Contrato</h3>
@@ -573,7 +573,7 @@
           </div>
 
           <!-- SUBTAB: CONTENIDO (CORE PIZARRA ESTRUCTURADA) -->
-          <div v-if="activeClientTab === 'contenido'" class="subtab-view">
+          <div v-if="activeClientTab === 'contenido'" class="subtab-view mt-3">
             <div class="contenido-grid">
               
               <!-- Left Column: Content list selector (Structured Posts) -->
@@ -739,9 +739,9 @@
                           <td><strong>Escena {{ scene.number }}</strong></td>
                           <td>{{ scene.action }}</td>
                           <td>{{ scene.audio }}</td>
-                          <td><span class="badge badge-neutral">Ref {{ scene.number }}</span></td>
+                          <td><span class="badge badge-idea">Ref {{ scene.number }}</span></td>
                           <td>
-                            <span class="badge badge-success">Listado</span>
+                            <span class="badge badge-approved">Listado</span>
                           </td>
                         </tr>
                       </tbody>
@@ -760,7 +760,7 @@
                       </div>
                       <div class="story-card-meta">
                         <p class="story-desc">{{ story.concept }}</p>
-                        <span class="badge badge-neutral">Interactiva</span>
+                        <span class="badge badge-idea">Interactiva</span>
                       </div>
                     </div>
                   </div>
@@ -783,7 +783,7 @@
           </div>
 
           <!-- SUBTAB: CALENDARIO -->
-          <div v-if="activeClientTab === 'calendario'" class="subtab-view">
+          <div v-if="activeClientTab === 'calendario'" class="subtab-view mt-3">
             <div class="card">
               <div class="calendar-controls">
                 <h3>Calendario de Contenidos - {{ selectedClient.name }}</h3>
@@ -812,7 +812,7 @@
           </div>
 
           <!-- SUBTAB: SESIONES DE FOTO Y VIDEO -->
-          <div v-if="activeClientTab === 'sesiones'" class="subtab-view">
+          <div v-if="activeClientTab === 'sesiones'" class="subtab-view mt-3">
             <div class="sesiones-layout">
               
               <!-- Photos Grouping -->
@@ -870,7 +870,7 @@
           </div>
 
           <!-- SUBTAB: NUBE -->
-          <div v-if="activeClientTab === 'nube'" class="subtab-view">
+          <div v-if="activeClientTab === 'nube'" class="subtab-view mt-3">
             <div class="card cloud-storage-card">
               <div class="cloud-header">
                 <h3>📁 Almacenamiento Nube</h3>
@@ -899,14 +899,14 @@
           </div>
 
           <!-- SUBTAB: PROGRAMACIÓN -->
-          <div v-if="activeClientTab === 'programacion'" class="subtab-view">
+          <div v-if="activeClientTab === 'programacion'" class="subtab-view mt-3">
             <div class="card text-center">
               <h3>🔗 Conexión &amp; Programación de Redes</h3>
               <p>Simulador de calendarización automática de posts en plataformas conectadas (Instagram, Facebook, TikTok).</p>
               
               <div class="mt-4">
-                <span class="badge badge-success">Instagram Conectado</span>
-                <span class="badge badge-neutral ml-2">TikTok (Pendiente)</span>
+                <span class="badge badge-approved">Instagram Conectado</span>
+                <span class="badge badge-idea ml-2">TikTok (Pendiente)</span>
               </div>
             </div>
           </div>
@@ -1315,16 +1315,24 @@ export default {
 }
 
 .select-input {
-  padding: 5px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-family: inherit;
   font-size: 0.8rem;
   background-color: #fff;
   cursor: pointer;
   outline: none;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-main);
+  transition: all 0.2s ease;
+}
+.select-input:hover {
+  border-color: var(--text-muted);
+}
+.select-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
 }
 
 .select-role {
@@ -1389,17 +1397,17 @@ export default {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: none;
-  border: none;
-  border-radius: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   text-align: left;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .menu-btn:hover {
   background-color: rgba(29, 29, 26, 0.03);
@@ -1408,7 +1416,7 @@ export default {
 .menu-btn.active {
   background-color: #ffffff;
   color: var(--text-main);
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
 }
@@ -1440,13 +1448,13 @@ export default {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: none;
-  border: none;
-  border-radius: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   text-align: left;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   color: var(--text-muted);
   cursor: pointer;
@@ -1459,7 +1467,7 @@ export default {
 .client-menu-btn.active {
   background-color: #ffffff;
   color: var(--text-main);
-  font-weight: 600;
+  font-weight: 700;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
 }
@@ -1551,28 +1559,6 @@ export default {
   font-weight: 700;
 }
 
-/* General design cards */
-.card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-  letter-spacing: -0.2px;
-}
-.card-desc {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-
 /* EDITORIAL DASHBOARD COMPOSITION */
 .dashboard-editorial-grid {
   display: grid;
@@ -1593,9 +1579,6 @@ export default {
 }
 
 /* Premium Focus Card */
-.premium-hero-card {
-  border-left: 4px solid var(--accent-color);
-}
 .hero-card-header {
   display: flex;
   justify-content: space-between;
@@ -1608,7 +1591,7 @@ export default {
   background-color: var(--accent-light);
   color: var(--accent-color);
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1629,7 +1612,7 @@ export default {
 /* Instagram Miniature Frame */
 .mini-ig-mockup {
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background-color: #fff;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -1711,7 +1694,7 @@ export default {
   margin-top: 8px;
   padding: 8px 12px;
   background-color: #fafaf9;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.75rem;
   border-left: 2px solid var(--accent-color);
 }
@@ -1734,14 +1717,6 @@ export default {
   padding-bottom: 12px;
   border-bottom: 1px solid #f4f4f0;
 }
-.process-status {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-.badge-process { background-color: #fffbeb; color: #d97706; }
-.badge-inprocess { background-color: #eff6ff; color: #2563eb; }
 
 .process-info {
   flex: 1;
@@ -1828,75 +1803,25 @@ export default {
   grid-column: span 2;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.form-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
 .form-control {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-family: inherit;
   font-size: 0.85rem;
   outline: none;
-  transition: border-color 0.2s;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
 }
 .form-control:focus {
   border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
 }
 
 .form-actions {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
-}
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
-}
-.btn-primary {
-  background-color: var(--accent-color);
-  color: #fff;
-}
-.btn-primary:hover {
-  background-color: var(--accent-hover);
-}
-.btn-secondary {
-  background-color: #fff;
-  border-color: var(--border-color);
-  color: var(--text-main);
-}
-.btn-secondary:hover {
-  background-color: #fcfcfc;
-}
-.btn-success {
-  background-color: var(--status-approved);
-  color: #fff;
-}
-.btn-warning {
-  background-color: var(--status-ready);
-  color: #fff;
-}
-.btn-sm {
-  padding: 4px 10px;
-  font-size: 0.75rem;
-}
-.btn-xs {
-  padding: 3px 8px;
-  font-size: 0.7rem;
 }
 
 /* AI Pillars visual result section (Bars, Chips, Percentages) */
@@ -1951,7 +1876,7 @@ export default {
 .pillars-summary-card {
   background-color: var(--bg-sidebar);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 16px;
 }
 .pillars-summary-card h5 {
@@ -2054,11 +1979,11 @@ export default {
   padding: 12px;
   background-color: #fafaf9;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   text-align: left;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .post-list-btn:hover {
   background-color: #f4f4f0;
@@ -2110,6 +2035,11 @@ export default {
   color: var(--text-muted);
 }
 
+.post-action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
 /* CAROUSEL INSTAGRAM FRAME MOCKUP */
 .carousel-visual-editor {
   display: grid;
@@ -2121,7 +2051,7 @@ export default {
   max-width: 300px;
   background-color: #fff;
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   margin: 0 auto;
   box-shadow: var(--shadow-md);
@@ -2251,7 +2181,7 @@ export default {
   height: 180px;
   overflow-y: auto;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 10px;
   margin-bottom: 12px;
   background-color: #fafaf9;
@@ -2260,7 +2190,7 @@ export default {
   background-color: #fff;
   border: 1px solid var(--border-color);
   padding: 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   margin-bottom: 8px;
   box-shadow: var(--shadow-sm);
 }
@@ -2286,7 +2216,7 @@ export default {
   gap: 10px;
   padding: 12px;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background-color: #fff;
   transition: background-color 0.2s;
 }
