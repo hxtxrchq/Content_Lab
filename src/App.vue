@@ -627,24 +627,113 @@
           <div v-if="activeClientTab === 'historial'" class="client-historial-tab animate-fade-in">
             <div class="view-header mb-4">
               <div>
-                <h1 class="view-title font-editorial">Historial de Publicaciones</h1>
-                <p class="view-subtitle">Registro y analíticas de contenido publicado previamente</p>
+                <h1 class="view-title font-editorial">Historial &amp; Evolución</h1>
+                <p class="view-subtitle">Evolución de métricas, hitos y línea de tiempo del contrato</p>
               </div>
             </div>
 
+            <!-- Información de contrato Card -->
             <div class="card mb-4">
-              <h3 class="block-title font-editorial">📁 Publicaciones Publicadas</h3>
-              <p class="text-muted mb-3">Historial acumulado de posts sincronizados y subidos automáticamente a redes sociales.</p>
-              
-              <div class="timeline-post-card card" style="border-left: 4px solid var(--status-published); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; padding: 16px;" v-for="post in selectedClient?.posts?.filter(p => p.status === 'Publicado' || p.status === 'Aprobado')" :key="post.id">
-                <div class="post-card-left" style="display: flex; align-items: center; gap: 12px;">
-                  <span class="badge badge-published" style="background-color: #16a34a; color: white;">Sincronizado</span>
-                  <div class="post-title-text" style="font-weight: 700;">{{ post.title }}</div>
-                  <div class="post-meta-sub" style="font-size: 0.78rem; color: var(--text-muted);">{{ post.type }} • Publicado en Abril</div>
+              <h3 class="block-title font-editorial" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 16px;">
+                <span>🤝</span> Información de contrato
+              </h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                  <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">Fecha de Inicio</div>
+                  <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 4px;">{{ selectedClient?.startDate || '2025-09-01' }}</div>
                 </div>
-                <div class="post-card-right" style="display: flex; gap: 16px;">
-                  <span style="font-size: 0.82rem; color: #16a34a; font-weight: 700;">❤️ 198 Likes</span>
-                  <span style="font-size: 0.82rem; color: #2563eb; font-weight: 700;">💬 56 Comentarios</span>
+                <div>
+                  <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">Plan Contratado</div>
+                  <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 4px;">{{ selectedClient?.plan || 'Premium • 12 posts/mes' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Evolución desde el inicio Card Grid -->
+            <div class="mb-4">
+              <h3 class="block-title font-editorial" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 16px;">
+                <span>📈</span> Evolución desde el inicio
+              </h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Captura Inicial -->
+                <div class="card" style="padding: 16px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <strong style="font-size: 0.85rem; color: var(--text-main);">Captura inicial</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">{{ selectedClient?.startDate || '2025-09-01' }}</span>
+                  </div>
+                  <!-- Simulated Insta capture placeholder -->
+                  <div style="height: 140px; background-color: #f1f5f9; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1px dashed var(--border-color);">
+                    <div style="text-align: center; color: var(--text-muted);">
+                      <span style="font-size: 2rem; display: block; margin-bottom: 4px;">📸</span>
+                      <span style="font-size: 0.75rem; font-weight: 600;">Feed inicial</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                      <span style="color: var(--text-muted);">Seguidores</span>
+                      <strong style="color: var(--text-main);">{{ selectedClient?.initialStats?.followers || '3.200' }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                      <span style="color: var(--text-muted);">Engagement</span>
+                      <strong style="color: var(--text-main);">{{ selectedClient?.initialStats?.engagement || '2.1%' }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                      <span style="color: var(--text-muted);">Alcance promedio</span>
+                      <strong style="color: var(--text-main);">{{ selectedClient?.initialStats?.reach || '6.800' }}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Captura Actual -->
+                <div class="card" style="padding: 16px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <strong style="font-size: 0.85rem; color: var(--text-main);">Captura actual</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">2026-05-01</span>
+                  </div>
+                  <!-- Simulated Insta capture placeholder -->
+                  <div style="height: 140px; background-color: #f5f3ff; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1px dashed #c084fc;">
+                    <div style="text-align: center; color: #a855f7;">
+                      <span style="font-size: 2rem; display: block; margin-bottom: 4px;">✨📷</span>
+                      <span style="font-size: 0.75rem; font-weight: 600;">Feed optimizado</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                      <span style="color: var(--text-muted);">Seguidores</span>
+                      <strong style="color: var(--text-main);">{{ selectedClient?.currentStats?.followers || '4.850' }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                      <span style="color: var(--text-muted);">Engagement</span>
+                      <strong style="color: var(--text-main);">{{ selectedClient?.currentStats?.engagement || '4.2%' }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                      <span style="color: var(--text-muted);">Alcance promedio</span>
+                      <strong style="color: var(--text-main);">{{ selectedClient?.currentStats?.reach || '15.200' }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Green stats badge row -->
+              <div class="card mt-3" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px 16px; border-radius: var(--radius-md); color: #16a34a; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                <span>➔</span> En total: {{ selectedClient?.growth?.followers || '+1.650' }} nuevos seguidores y {{ selectedClient?.growth?.reach || '+8.400' }} de alcance desde el contrato
+              </div>
+            </div>
+
+            <!-- Línea de tiempo Timeline events -->
+            <div class="card mb-4">
+              <h3 class="block-title font-editorial" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 20px;">
+                <span>🕒</span> Línea de tiempo
+              </h3>
+              
+              <div style="display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); margin-left: 8px;">
+                <div v-for="event in selectedClient?.timeline" :key="event.date" style="position: relative; margin-bottom: 24px;">
+                  <!-- Bullet marker -->
+                  <div style="position: absolute; left: -28px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background-color: var(--accent-color); border: 3px solid white; box-shadow: var(--shadow-sm);"></div>
+                  
+                  <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 2px;">{{ event.date }}</div>
+                  <strong style="font-size: 0.9rem; color: var(--text-main); display: block;">{{ event.icon }} {{ event.title }}</strong>
+                  <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">{{ event.desc }}</p>
                 </div>
               </div>
             </div>
@@ -1496,6 +1585,115 @@
               </div>
             </div>
 
+            <!-- AGENCY VIEW SUBTAB: HISTORIAL -->
+            <div v-if="activeClientTab === 'historial'" class="subtab-view mt-3">
+              <!-- Información de contrato Card -->
+              <div class="card mb-4">
+                <h3 class="block-title font-editorial" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 16px;">
+                  <span>🤝</span> Información de contrato
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                  <div>
+                    <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">Fecha de Inicio</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 4px;">{{ selectedClient?.startDate || '2025-09-01' }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">Plan Contratado</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 4px;">{{ selectedClient?.plan || 'Premium • 12 posts/mes' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Evolución desde el inicio Card Grid -->
+              <div class="mb-4">
+                <h3 class="block-title font-editorial" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 16px;">
+                  <span>📈</span> Evolución desde el inicio
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                  <!-- Captura Inicial -->
+                  <div class="card" style="padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                      <strong style="font-size: 0.85rem; color: var(--text-main);">Captura inicial</strong>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">{{ selectedClient?.startDate || '2025-09-01' }}</span>
+                    </div>
+                    <!-- Simulated Insta capture placeholder -->
+                    <div style="height: 140px; background-color: #f1f5f9; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1px dashed var(--border-color);">
+                      <div style="text-align: center; color: var(--text-muted);">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 4px;">📸</span>
+                        <span style="font-size: 0.75rem; font-weight: 600;">Feed inicial</span>
+                      </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: var(--text-muted);">Seguidores</span>
+                        <strong style="color: var(--text-main);">{{ selectedClient?.initialStats?.followers || '3.200' }}</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: var(--text-muted);">Engagement</span>
+                        <strong style="color: var(--text-main);">{{ selectedClient?.initialStats?.engagement || '2.1%' }}</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span style="color: var(--text-muted);">Alcance promedio</span>
+                        <strong style="color: var(--text-main);">{{ selectedClient?.initialStats?.reach || '6.800' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Captura Actual -->
+                  <div class="card" style="padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                      <strong style="font-size: 0.85rem; color: var(--text-main);">Captura actual</strong>
+                      <span style="font-size: 0.75rem; color: var(--text-muted);">2026-05-01</span>
+                    </div>
+                    <!-- Simulated Insta capture placeholder -->
+                    <div style="height: 140px; background-color: #f5f3ff; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1px dashed #c084fc;">
+                      <div style="text-align: center; color: #a855f7;">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 4px;">✨📷</span>
+                        <span style="font-size: 0.75rem; font-weight: 600;">Feed optimizado</span>
+                      </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: var(--text-muted);">Seguidores</span>
+                        <strong style="color: var(--text-main);">{{ selectedClient?.currentStats?.followers || '4.850' }}</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: var(--text-muted);">Engagement</span>
+                        <strong style="color: var(--text-main);">{{ selectedClient?.currentStats?.engagement || '4.2%' }}</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span style="color: var(--text-muted);">Alcance promedio</span>
+                        <strong style="color: var(--text-main);">{{ selectedClient?.currentStats?.reach || '15.200' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Green stats badge row -->
+                <div class="card mt-3" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px 16px; border-radius: var(--radius-md); color: #16a34a; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                  <span>➔</span> En total: {{ selectedClient?.growth?.followers || '+1.650' }} nuevos seguidores y {{ selectedClient?.growth?.reach || '+8.400' }} de alcance desde el contrato
+                </div>
+              </div>
+
+              <!-- Línea de tiempo Timeline events -->
+              <div class="card mb-4">
+                <h3 class="block-title font-editorial" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; margin-bottom: 20px;">
+                  <span>🕒</span> Línea de tiempo
+                </h3>
+                
+                <div style="display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); margin-left: 8px;">
+                  <div v-for="event in selectedClient?.timeline" :key="event.date" style="position: relative; margin-bottom: 24px;">
+                    <!-- Bullet marker -->
+                    <div style="position: absolute; left: -28px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background-color: var(--accent-color); border: 3px solid white; box-shadow: var(--shadow-sm);"></div>
+                    
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 2px;">{{ event.date }}</div>
+                    <strong style="font-size: 0.9rem; color: var(--text-main); display: block;">{{ event.icon }} {{ event.title }}</strong>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">{{ event.desc }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- AGENCY VIEW SUBTAB: PROGRAMACIÓN (CORE EDITOR PIZARRA) -->
             <div v-if="activeClientTab === 'programacion'" class="subtab-view mt-3">
               <div class="contenido-grid">
@@ -1975,6 +2173,18 @@ export default {
           name: 'Wings & Co.',
           avatar: '🍗',
           niche: 'Restaurante de Alitas',
+          plan: 'Premium • 12 posts/mes',
+          startDate: '2025-09-01',
+          initialStats: { followers: '3.200', engagement: '2.1%', reach: '6.800' },
+          currentStats: { followers: '4.850', engagement: '4.2%', reach: '15.200' },
+          growth: { followers: '+1.650', reach: '+8.400' },
+          timeline: [
+            { date: '2025-09-01', title: 'Inicio de contrato', desc: 'Onboarding y captura inicial del feed', icon: '🤝' },
+            { date: '2025-10-15', title: 'Campaña "15 Sabores"', desc: 'Reel viral · +850 seguidores en 1 semana', icon: '🎗️' },
+            { date: '2025-12-20', title: '4K seguidores', desc: 'Meta alcanzada antes de lo previsto', icon: '📈' },
+            { date: '2026-03-01', title: 'Reporte trimestral Q1', desc: 'Engagement +98% vs inicio', icon: '📋' },
+            { date: '2026-05-01', title: 'Reporte mensual mayo', desc: 'Mejor mes en alcance: 15.2K', icon: '📊' }
+          ],
           posts: [
             {
               id: 'post-1',
@@ -2086,6 +2296,16 @@ export default {
           name: 'FitZone Gym',
           avatar: '💪',
           niche: 'Gimnasio & Fitness',
+          plan: 'Básico • 8 posts/mes',
+          startDate: '2025-11-01',
+          initialStats: { followers: '1.200', engagement: '1.9%', reach: '2.500' },
+          currentStats: { followers: '2.100', engagement: '3.4%', reach: '6.200' },
+          growth: { followers: '+900', reach: '+3.700' },
+          timeline: [
+            { date: '2025-11-01', title: 'Inicio de contrato', desc: 'Configuración inicial y pilares de marca', icon: '🤝' },
+            { date: '2026-01-10', title: 'Reel: Desafío de año nuevo', desc: 'Aumento de interacciones en comunidad', icon: '🔥' },
+            { date: '2026-04-15', title: 'Reporte trimestral', desc: 'Alcance orgánico estable', icon: '📊' }
+          ],
           posts: []
         },
         {
@@ -2093,6 +2313,16 @@ export default {
           name: 'Café Aroma',
           avatar: '☕',
           niche: 'Cafetería de Especialidad',
+          plan: 'Premium • 12 posts/mes',
+          startDate: '2025-10-01',
+          initialStats: { followers: '2.400', engagement: '2.5%', reach: '5.100' },
+          currentStats: { followers: '3.900', engagement: '4.0%', reach: '11.800' },
+          growth: { followers: '+1.500', reach: '+6.700' },
+          timeline: [
+            { date: '2025-10-01', title: 'Inicio de contrato', desc: 'Onboarding y sesión inicial de branding', icon: '🤝' },
+            { date: '2026-02-14', title: 'Campaña: San Valentín', desc: 'Aumento en reservas y ventas de café de especialidad', icon: '❤️' },
+            { date: '2026-05-10', title: 'Reporte Q1', desc: 'Estrategia visual premium completada', icon: '📊' }
+          ],
           posts: []
         }
       ],
