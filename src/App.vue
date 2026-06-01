@@ -3,7 +3,7 @@
     <!-- Top System Switch Bar: Role Switcher & Branding Personalization Toggle -->
     <div class="system-switch-bar">
       <div class="logo-area">
-        <span class="logo-icon">🎬</span>
+        <span class="logo-icon">✨</span>
         <span class="logo-text">ContentLab</span>
         <span class="logo-badge">PROTOTIPO MVP</span>
       </div>
@@ -11,7 +11,7 @@
       <!-- Current Active Role Context Switcher -->
       <div class="controls-area">
         <div class="role-selector">
-          <label>Modo de Vista:</label>
+          <span class="selector-icon">👁️</span>
           <select v-model="currentViewMode" class="select-input">
             <option value="agency">🏢 MODO AGENCIA</option>
             <option value="client">👤 MODO CLIENTE (Simple)</option>
@@ -19,18 +19,18 @@
         </div>
 
         <div v-if="currentViewMode === 'agency'" class="agency-role-selector">
-          <label>Permisos de Rol:</label>
+          <span class="selector-icon">⚙️</span>
           <select v-model="currentAgencyRole" class="select-input select-role">
-            <option value="pm">👨💼 Director / PM</option>
-            <option value="cm">✍️ Content Manager</option>
-            <option value="designer">🎨 Diseñador</option>
-            <option value="video">🎬 Audiovisual</option>
+            <option value="pm">Director / PM</option>
+            <option value="cm">Content Manager</option>
+            <option value="designer">Diseñador</option>
+            <option value="video">Audiovisual</option>
           </select>
         </div>
 
         <!-- Custom Agency Branding simulated selector -->
         <div class="agency-branding-toggle">
-          <label>Marca de Agencia:</label>
+          <span class="selector-icon">🎨</span>
           <select v-model="selectedBrandingLogo" class="select-input">
             <option value="Standard">ContentLab Teal</option>
             <option value="AgencyAlpha">Alpha Media (Naranja)</option>
@@ -43,9 +43,8 @@
     <!-- Main Workspace Area -->
     <div class="workspace" :style="customThemeColors">
       
-      <!-- SIDEBAR -->
+      <!-- SIDEBAR (Fine, Elegant, Less Heavy) -->
       <aside class="sidebar">
-        <!-- Agency Custom Branding Header -->
         <div class="sidebar-branding">
           <div class="brand-logo-container">
             <span class="brand-bullet" :style="{ backgroundColor: activeThemeColor }"></span>
@@ -55,59 +54,65 @@
 
         <!-- Navigation Menu -->
         <nav class="sidebar-menu">
-          <button 
-            @click="activeMainMenu = 'dashboard'" 
-            :class="['menu-btn', { active: activeMainMenu === 'dashboard' }]"
-          >
-            <span class="btn-icon">📊</span> Dashboard
-          </button>
-          
-          <button 
-            @click="activeMainMenu = 'brief'" 
-            :class="['menu-btn', { active: activeMainMenu === 'brief' }]"
-          >
-            <span class="btn-icon">📝</span> Brief &amp; Pilares
-          </button>
-          
-          <button 
-            @click="activeMainMenu = 'database'" 
-            :class="['menu-btn', { active: activeMainMenu === 'database' }]"
-          >
-            <span class="btn-icon">📦</span> Repositorio de Marca
-          </button>
+          <div class="menu-group">
+            <button 
+              @click="activeMainMenu = 'dashboard'" 
+              :class="['menu-btn', { active: activeMainMenu === 'dashboard' }]"
+            >
+              <span class="btn-icon">📊</span> Dashboard
+            </button>
+            
+            <button 
+              @click="activeMainMenu = 'brief'" 
+              :class="['menu-btn', { active: activeMainMenu === 'brief' }]"
+            >
+              <span class="btn-icon">📝</span> Brief &amp; Pilares
+            </button>
+            
+            <button 
+              @click="activeMainMenu = 'database'" 
+              :class="['menu-btn', { active: activeMainMenu === 'database' }]"
+            >
+              <span class="btn-icon">📦</span> Repositorio de Marca
+            </button>
+          </div>
           
           <!-- Clientes Header and List -->
-          <div class="menu-section-header">👥 Clientes</div>
-          
-          <div class="client-sublist">
-            <button 
-              v-for="c in clients" 
-              :key="c.id"
-              @click="selectClient(c)"
-              :class="['client-menu-btn', { active: activeMainMenu === 'client' && selectedClient?.id === c.id }]"
-            >
-              <span class="client-avatar">{{ c.avatar }}</span>
-              <span class="client-name">{{ c.name }}</span>
-            </button>
+          <div class="menu-section">
+            <div class="menu-section-header">Marcas Activas</div>
+            <div class="client-sublist">
+              <button 
+                v-for="c in clients" 
+                :key="c.id"
+                @click="selectClient(c)"
+                :class="['client-menu-btn', { active: activeMainMenu === 'client' && selectedClient?.id === c.id }]"
+              >
+                <span class="client-avatar">{{ c.avatar }}</span>
+                <span class="client-name">{{ c.name }}</span>
+              </button>
+            </div>
           </div>
 
           <!-- Global Strategy Cross-Calendar for PMs only -->
-          <div v-if="currentViewMode === 'agency' && currentAgencyRole === 'pm'" class="menu-section-header">🗓️ Estrategia Global</div>
-          <button 
-            v-if="currentViewMode === 'agency' && currentAgencyRole === 'pm'"
-            @click="activeMainMenu = 'global_calendar'" 
-            :class="['menu-btn', { active: activeMainMenu === 'global_calendar' }]"
-          >
-            <span class="btn-icon">📅</span> Multi-Marca Calendario
-          </button>
+          <div v-if="currentViewMode === 'agency' && currentAgencyRole === 'pm'" class="menu-section">
+            <div class="menu-section-header">Estrategia</div>
+            <button 
+              @click="activeMainMenu = 'global_calendar'" 
+              :class="['menu-btn', { active: activeMainMenu === 'global_calendar' }]"
+            >
+              <span class="btn-icon">📅</span> Calendario Global
+            </button>
+          </div>
           
-          <button 
-            @click="activeMainMenu = 'notifications'" 
-            :class="['menu-btn', { active: activeMainMenu === 'notifications' }]"
-          >
-            <span class="btn-icon">🔔</span> Notificaciones 
-            <span class="badge" v-if="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
-          </button>
+          <div class="menu-group mt-auto">
+            <button 
+              @click="activeMainMenu = 'notifications'" 
+              :class="['menu-btn', { active: activeMainMenu === 'notifications' }]"
+            >
+              <span class="btn-icon">🔔</span> Notificaciones 
+              <span class="badge" v-if="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
+            </button>
+          </div>
         </nav>
 
         <!-- Current User Role Display Footer -->
@@ -124,109 +129,153 @@
         </div>
       </aside>
 
-      <!-- CONTENT BODY -->
+      <!-- CONTENT BODY (Composition Editorial) -->
       <main class="content-body">
         
         <!-- MODULE: DASHBOARD -->
         <div v-if="activeMainMenu === 'dashboard'" class="module-view">
           <div class="view-header">
             <div>
-              <h1 class="view-title">Dashboard Principal</h1>
-              <p class="view-subtitle">Resumen global de avance y estado de contenido de las marcas.</p>
+              <span class="view-eyebrow">RESUMEN CREATIVO</span>
+              <h1 class="view-title">Dashboard de Contenido</h1>
+              <p class="view-subtitle">Foco editorial de publicaciones, storyboards y aprobaciones pendientes.</p>
             </div>
             <div class="header-actions" v-if="currentViewMode === 'agency'">
-              <span class="metric-summary-pill">Procesando: {{ activePostsCount }} posts</span>
+              <span class="metric-summary-pill">Avance: {{ activePostsCount }} piezas en pipeline</span>
             </div>
           </div>
 
-          <!-- Agency Dashboard Stats -->
-          <div v-if="currentViewMode === 'agency'" class="grid-stats">
-            <div class="stat-card">
-              <span class="stat-icon">👥</span>
-              <div class="stat-val">{{ clients.length }}</div>
-              <div class="stat-lbl">Clientes Activos</div>
-            </div>
-            <div class="stat-card">
-              <span class="stat-icon">🔄</span>
-              <div class="stat-val">{{ countPostsByStatus('En proceso') }}</div>
-              <div class="stat-lbl">Contenidos en Proceso</div>
-            </div>
-            <div class="stat-card">
-              <span class="stat-icon">⏳</span>
-              <div class="stat-val">{{ countPostsByStatus('Listo') }}</div>
-              <div class="stat-lbl">Pendientes Aprobación Interna</div>
-            </div>
-            <div class="stat-card">
-              <span class="stat-icon">✅</span>
-              <div class="stat-val">{{ countPostsByStatus('Aprobado') }}</div>
-              <div class="stat-lbl">Aprobados por Cliente</div>
-            </div>
-            <div class="stat-card alert-stat">
-              <span class="stat-icon">⚠️</span>
-              <div class="stat-val">2</div>
-              <div class="stat-lbl">Tareas Atrasadas</div>
-            </div>
-          </div>
+          <!-- EDITORIAL DASHBOARD COMPOSITION (One Big Focus Card + Secondary Column) -->
+          <div class="dashboard-editorial-grid">
+            
+            <!-- Left Side: Editorial Core Focus (Content, Mockups, Approvals) -->
+            <div class="editorial-main-panel">
+              <div class="card premium-hero-card">
+                <div class="hero-card-header">
+                  <div>
+                    <span class="hero-badge">NÚCLEO DEL PRODUCTO</span>
+                    <h2>Estructura de Contenido esta Semana</h2>
+                  </div>
+                  <button @click="selectClient(clients[0])" class="btn btn-secondary btn-sm">Ver Pizarra Completa →</button>
+                </div>
+                
+                <div class="hero-preview-row">
+                  <!-- Live Instagram Mockup Mini Frame -->
+                  <div class="mini-ig-mockup">
+                    <div class="mini-ig-header">
+                      <span>🍗 wings_factory</span>
+                      <span class="status-indicator-dot" style="background-color: var(--status-ready)"></span>
+                    </div>
+                    <div class="mini-ig-body">
+                      <span class="mini-slide-badge">Slide 1/4</span>
+                      <div class="mini-slide-content">
+                        <strong>¿Eres fanático del picante real?</strong>
+                        <p>[Mockup: Alitas crujientes con humo animado]</p>
+                      </div>
+                    </div>
+                    <div class="mini-ig-footer">
+                      <span>💬 2 Observaciones activas</span>
+                    </div>
+                  </div>
 
-          <!-- Client Dashboard simple view -->
-          <div v-else class="client-dashboard-welcome">
-            <div class="welcome-box">
-              <h2>¡Hola, {{ selectedClient?.name || 'Cliente' }}! 👋</h2>
-              <p>Aquí tienes el estado de tu contenido para esta semana y los pendientes que requieren tu atención.</p>
-            </div>
+                  <!-- Quick Stats & Actions list -->
+                  <div class="hero-quick-details">
+                    <div class="quick-post-item">
+                      <span class="post-type-lbl text-carousel">CARRUSEL</span>
+                      <h4>🔥 Las 3 salsas más picantes</h4>
+                      <p>Objetivo: Enganchar con la comunidad amante del picante.</p>
+                      <div class="comment-summary-bubble">
+                        <strong>Comentario Supervisor:</strong> "Me gusta el hook, que la foto se vea jugosa."
+                      </div>
+                    </div>
 
-            <div class="grid-stats">
-              <div class="stat-card">
-                <span class="stat-icon">📅</span>
-                <div class="stat-val">2</div>
-                <div class="stat-lbl">Publicaciones Programadas esta Semana</div>
-              </div>
-              <div class="stat-card alert-stat">
-                <span class="stat-icon">🔔</span>
-                <div class="stat-val">1</div>
-                <div class="stat-lbl">Estructuras Pendientes de Aprobación</div>
-              </div>
-              <div class="stat-card">
-                <span class="stat-icon">✅</span>
-                <div class="stat-val">4</div>
-                <div class="stat-lbl">Publicaciones Aprobadas</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interactive Feed Comparison Mockup Block -->
-          <div class="card feed-evolution-card">
-            <div class="card-header">
-              <h3 class="card-title">📈 Evolución Visual de Marca en Instagram</h3>
-              <p class="card-desc">Comparativa del feed de Instagram antes de contratar la agencia vs el resultado con la grilla planificada.</p>
-            </div>
-            <div class="feed-split-view">
-              <div class="feed-column">
-                <h4 class="feed-col-title title-before">Feed Antes de la Agencia</h4>
-                <div class="mockup-feed-grid">
-                  <div class="feed-item bg-gray-dark"><span class="lbl-feed">Foto desenfocada alitas</span><span class="stats-mini">❤️ 12 💬 1</span></div>
-                  <div class="feed-item bg-gray-dark"><span class="lbl-feed">Texto largo promocional</span><span class="stats-mini">❤️ 8 💬 0</span></div>
-                  <div class="feed-item bg-gray-dark"><span class="lbl-feed">Fondo oscuro sin marca</span><span class="stats-mini">❤️ 15 💬 3</span></div>
+                    <div class="quick-post-item mt-3">
+                      <span class="post-type-lbl text-reel">REEL</span>
+                      <h4>🎥 Sonido del crujido real (ASMR)</h4>
+                      <p>Escena 1: Alita saliendo de freidora con sonido crujiente.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="feed-column">
-                <h4 class="feed-col-title title-after">Feed Evolucionado (Estructurado)</h4>
-                <div class="mockup-feed-grid grid-after">
-                  <div class="feed-item bg-brand-colored"><span class="lbl-feed">Carrusel: Pilar Producto (60%)</span><span class="stats-mini">❤️ 184 💬 32</span></div>
-                  <div class="feed-item bg-brand-colored"><span class="lbl-feed">Reel: Storyboard Experiencia</span><span class="stats-mini">❤️ 412 💬 88</span></div>
-                  <div class="feed-item bg-brand-colored"><span class="lbl-feed">Post: Lifestyle Momentos</span><span class="stats-mini">❤️ 210 💬 19</span></div>
+
+              <!-- Composition list of active processes (No generic grids) -->
+              <div class="editorial-list-block card">
+                <h3 class="block-title">Aprobaciones y Flujo Creativo Reciente</h3>
+                <div class="process-checklist-items">
+                  <div class="process-item-row">
+                    <span class="process-status badge-process">Listo</span>
+                    <div class="process-info">
+                      <strong>Wings Factory - Carrusel "3 salsas más picantes"</strong>
+                      <p>Esperando aprobación del Cliente | Copy &amp; Estructura listos</p>
+                    </div>
+                    <span class="process-time">Hace 10m</span>
+                  </div>
+                  <div class="process-item-row">
+                    <span class="process-status badge-inprocess">En proceso</span>
+                    <div class="process-info">
+                      <strong>Wings Factory - Reel "Sonido del crujido"</strong>
+                      <p>Diseño y audiovisual agregando referencias visuales de Pinterest</p>
+                    </div>
+                    <span class="process-time">Hace 1h</span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <!-- Right Side: Secondary Column (Agenda, KPIs and quick tools) -->
+            <div class="editorial-side-panel">
+              <div class="card simple-kpi-card mb-4" v-if="currentViewMode === 'agency'">
+                <h3>Composición Global</h3>
+                <div class="kpi-micro-row">
+                  <div class="kpi-micro-item">
+                    <span class="lbl">Activas</span>
+                    <strong class="val">{{ clients.length }}</strong>
+                  </div>
+                  <div class="kpi-micro-item">
+                    <span class="lbl">Listo</span>
+                    <strong class="val">{{ countPostsByStatus('Listo') }}</strong>
+                  </div>
+                  <div class="kpi-micro-item">
+                    <span class="lbl">Aprobado</span>
+                    <strong class="val">{{ countPostsByStatus('Aprobado') }}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Photoshoot Sessions Planer Preview -->
+              <div class="card sessions-preview-card">
+                <div class="sessions-card-header">
+                  <h3>📸 Agenda de Sesión</h3>
+                  <span class="tag-status">Mayo 2026</span>
+                </div>
+                <p class="desc">Preparativos requeridos en tienda física:</p>
+                <ul class="mini-checklist">
+                  <li v-for="item in storeChecklist.slice(0, 2)" :key="item.id">
+                    <input type="checkbox" v-model="item.completed" />
+                    <span>{{ item.label.substring(0, 45) }}...</span>
+                  </li>
+                </ul>
+                <button @click="activeClientTab = 'sesiones'; selectClient(clients[0])" class="btn btn-secondary btn-xs mt-3 w-100">Ver Checklist Detallado →</button>
+              </div>
+
+              <!-- Direct link to active brief pillars -->
+              <div class="card brief-action-promo mt-4">
+                <h4>Generador de Briefing</h4>
+                <p>Crea pilares de contenido y distribuye el mix de publicaciones con IA.</p>
+                <button @click="activeMainMenu = 'brief'" class="btn btn-primary btn-sm mt-3 w-100">Crear Estrategia con IA</button>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        <!-- MODULE: BRIEF & PILARES -->
+        <!-- MODULE: BRIEF & PILARES (Highly Visual Bars, Chips, Percentages) -->
         <div v-if="activeMainMenu === 'brief'" class="module-view">
           <div class="view-header">
             <div>
-              <h1 class="view-title">Gestión de Briefing de Clientes</h1>
-              <p class="view-subtitle">Genera pilares de contenido estratégicos con nuestra simulación de IA.</p>
+              <span class="view-eyebrow">DIRECCIÓN ESTRATÉGICA</span>
+              <h1 class="view-title">Briefing &amp; Pilares</h1>
+              <p class="view-subtitle">Formulario de estructura de marca y cálculo inteligente de mix de contenidos.</p>
             </div>
           </div>
 
@@ -235,13 +284,13 @@
               📝 Llenar Nuevo Brief
             </button>
             <button @click="activeBriefTab = 'history'" :class="['brief-tab-btn', { active: activeBriefTab === 'history' }]">
-              📁 Historial de Briefs ({ { briefsHistory.length } })
+              📁 Historial de Briefs ({{ briefsHistory.length }})
             </button>
           </div>
 
           <!-- NEW BRIEF TAB -->
           <div v-if="activeBriefTab === 'new'" class="card brief-form-card">
-            <h3 class="card-title">Completa el formulario para estructurar la marca</h3>
+            <h3 class="card-title">Completa el perfil de tu marca</h3>
             
             <div class="form-grid">
               <div class="form-group">
@@ -281,28 +330,33 @@
               </button>
             </div>
 
-            <!-- AI Output pillars display inside brief new -->
+            <!-- AI Output pillars display inside brief new (Visual Bars, Chips) -->
             <div v-if="generatedPillarsResult" class="ai-pillars-result">
               <h4 class="pillars-title">✨ Propuesta de Pilares de Contenido Generada con IA:</h4>
               <div class="pillars-layout">
                 <div class="pillars-chart-container">
                   <div class="pillar-chart-bar" v-for="p in generatedPillarsResult.pillars" :key="p.name">
-                    <div class="bar-label">{{ p.name }} ({{ p.percentage }}%)</div>
+                    <div class="bar-header-row">
+                      <span class="bar-name-chip" :style="{ borderLeft: '4px solid ' + p.color }">{{ p.name }}</span>
+                      <strong class="bar-percentage">{{ p.percentage }}%</strong>
+                    </div>
                     <div class="bar-track">
                       <div class="bar-fill" :style="{ width: p.percentage + '%', backgroundColor: p.color }"></div>
                     </div>
                     <p class="pillar-desc">{{ p.desc }}</p>
                   </div>
                 </div>
+                
                 <div class="pillars-summary-card">
-                  <h5>Distribución Recomendada</h5>
+                  <h5>Estructura Mensual</h5>
                   <p>Basado en el brief de <strong>{{ generatedPillarsResult.clientName }}</strong> con meta de <strong>{{ generatedPillarsResult.monthlyPosts }} posts mensuales</strong>:</p>
-                  <ul>
+                  <ul class="monthly-list">
                     <li v-for="p in generatedPillarsResult.pillars" :key="p.name">
-                      <strong>{{ Math.round((p.percentage/100) * generatedPillarsResult.monthlyPosts) }} publicaciones</strong> de {{ p.name }}
+                      <span class="bullet" :style="{ backgroundColor: p.color }"></span>
+                      <span>{{ Math.round((p.percentage/100) * generatedPillarsResult.monthlyPosts) }} publicaciones de {{ p.name }}</span>
                     </li>
                   </ul>
-                  <button @click="saveBriefToHistory" class="btn btn-secondary btn-sm mt-3">
+                  <button @click="saveBriefToHistory" class="btn btn-secondary btn-sm mt-3 w-100">
                     📁 Guardar y Crear Carpetas Independientes
                   </button>
                 </div>
@@ -336,8 +390,9 @@
         <div v-if="activeMainMenu === 'database'" class="module-view">
           <div class="view-header">
             <div>
+              <span class="view-eyebrow">REPOSITORIO CENTRAL</span>
               <h1 class="view-title">Repositorio de Marca</h1>
-              <p class="view-subtitle">Bases y guías estratégicas indispensables de cada cliente.</p>
+              <p class="view-subtitle">Guías estratégicas indispensables de cada cliente.</p>
             </div>
           </div>
           <div class="grid-repo">
@@ -360,7 +415,8 @@
         <div v-if="activeMainMenu === 'notifications'" class="module-view">
           <div class="view-header">
             <div>
-              <h1 class="view-title">Notificaciones del Sistema</h1>
+              <span class="view-eyebrow">AVISOS Y ALERTAS</span>
+              <h1 class="view-title">Notificaciones</h1>
               <p class="view-subtitle">Control de revisiones, comentarios y tareas de producción.</p>
             </div>
             <button @click="markAllNotificationsAsRead" class="btn btn-secondary btn-sm">Marcar todas como leídas</button>
@@ -409,6 +465,7 @@
         <div v-if="activeMainMenu === 'global_calendar' && currentViewMode === 'agency'" class="module-view">
           <div class="view-header">
             <div>
+              <span class="view-eyebrow">CRONOGRAMA EDITORIAL</span>
               <h1 class="view-title">Calendario Cruzado Multi-Marca</h1>
               <p class="view-subtitle">Control estratégico de publicaciones simultáneas de todas tus marcas.</p>
             </div>
@@ -435,7 +492,7 @@
           </div>
         </div>
 
-        <!-- MODULE: CLIENT SPECIFIC VIEW -->
+        <!-- MODULE: CLIENT SPECIFIC VIEW (Clean Layout, Structured Content Focus) -->
         <div v-if="activeMainMenu === 'client' && selectedClient" class="module-view">
           <div class="client-detail-header">
             <div class="client-logo-title">
@@ -470,7 +527,7 @@
           <div v-if="activeClientTab === 'resumen'" class="subtab-view">
             <div class="grid-resumen">
               <div class="card">
-                <h3 class="card-title">Resumen de Contratos y Planificación</h3>
+                <h3 class="card-title">Resumen de Contrato</h3>
                 <div class="resumen-metrics">
                   <div class="metric-row">
                     <span class="metric-label">Publicaciones al mes pactadas:</span>
@@ -513,13 +570,13 @@
             </div>
           </div>
 
-          <!-- SUBTAB: CONTENIDO (CORE) -->
+          <!-- SUBTAB: CONTENIDO (CORE PIZARRA ESTRUCTURADA) -->
           <div v-if="activeClientTab === 'contenido'" class="subtab-view">
             <div class="contenido-grid">
               
               <!-- Left Column: Content list selector (Structured Posts) -->
               <div class="contenido-sidebar card">
-                <h4 class="sidebar-title">Estructuras para Revisar</h4>
+                <h4 class="sidebar-title">Estructuras de Contenido</h4>
                 <div class="posts-list">
                   <button 
                     v-for="post in selectedClient.posts" 
@@ -557,7 +614,7 @@
                 <!-- CAROUSEL MOCKUP TYPE -->
                 <div v-if="currentPost.type === 'Carrusel'" class="carousel-visual-editor">
                   <div class="carousel-preview-column">
-                    <h3 class="viewer-section-title">Vista Previa Carrusel (Instagram Mockup)</h3>
+                    <h3 class="viewer-section-title">Visualización de Slide</h3>
                     
                     <!-- Instagram Slide Frame Mockup -->
                     <div class="instagram-frame">
@@ -577,7 +634,7 @@
                         <div class="slide-designer-canvas" :style="{ backgroundColor: activeCarouselSlideContent.bgColor || '#f3f4f6' }">
                           <h4 class="slide-canvas-hook">{{ activeCarouselSlideContent.hook }}</h4>
                           <p class="slide-canvas-concept">{{ activeCarouselSlideContent.concept }}</p>
-                          <div class="slide-bottom-guide">[Estructura Conceptual - No diseño final aún]</div>
+                          <div class="slide-bottom-guide">[Estructura Conceptual - No diseño final]</div>
                         </div>
                       </div>
 
@@ -609,7 +666,7 @@
                   <!-- Comments and Feedback side panel for current Carousel Slide -->
                   <div class="carousel-feedback-column card">
                     <h3 class="feedback-title">💬 Observaciones en Slide {{ activeCarouselSlide + 1 }}</h3>
-                    <p class="feedback-desc">Comentarios de aprobación entre supervisor y diseñador para este slide específico.</p>
+                    <p class="feedback-desc">Comentarios del supervisor de cuentas para esta slide.</p>
                     
                     <div class="comments-scroller">
                       <div 
@@ -653,7 +710,7 @@
                       <p><strong>Voz en off / Sonido:</strong> {{ currentPost.reelDetails.voiceover }}</p>
                     </div>
                     <div class="card info-card">
-                      <h5>📌 Referencia Visual (Pinterest / Video Ref)</h5>
+                      <h5>📌 Referencia Visual</h5>
                       <div class="pinterest-ref-link">
                         <span class="pin-icon">📌</span>
                         <a href="#" class="ref-link" @click.prevent="alert('Simulación: Abriendo referencia de Pinterest')">
@@ -902,9 +959,9 @@ export default {
           date: '15/05/2026',
           pillars: [
             { name: 'Producto / Foodporn', percentage: 60, color: '#0d9488', desc: 'Tomas cercanas de alitas recién cocinadas bañadas en salsas.' },
-            { name: 'Lifestyle / Momentos', percentage: 10, color: '#3b82f6', desc: 'Amigos compartiendo bandejas de alitas en locales.' },
-            { name: 'Educativo / Datos', percentage: 20, color: '#f59e0b', desc: 'Origen de los chiles y tipos de salsas.' },
-            { name: 'Promos / Venta Directa', percentage: 10, color: '#8b5cf6', desc: 'Combos de miércoles de alitas y promociones.' }
+            { name: 'Lifestyle / Momentos', percentage: 10, color: '#2563eb', desc: 'Amigos compartiendo bandejas de alitas en locales.' },
+            { name: 'Educativo / Datos', percentage: 20, color: '#d97706', desc: 'Origen de los chiles y tipos de salsas.' },
+            { name: 'Promos / Venta Directa', percentage: 10, color: '#7c3aed', desc: 'Combos de miércoles de alitas y promociones.' }
           ]
         }
       ],
@@ -928,7 +985,7 @@ export default {
                   number: 1,
                   hook: '🔥 ¿Eres fanático del picante real?',
                   concept: 'Mockup visual con imagen gigante de alitas ardientes de fondo con humo animado.',
-                  bgColor: '#fef2f2',
+                  bgColor: '#fff8f6',
                   comments: [
                     { id: 1, author: 'Carlos (Supervisor PM)', role: 'PM', text: 'Me gusta el hook, asegúrate que las alitas se vean súper jugosas en el mockup final.' },
                     { id: 2, author: 'Sofía (Content)', role: 'CM', text: 'Listo, agregaremos el logo de Wings Factory en la esquina superior.' }
@@ -938,14 +995,14 @@ export default {
                   number: 2,
                   hook: '🥵 Puesto 3: Mango Habanero',
                   concept: 'Detalle de la salsa agridulce con trozos de chile habanero fresco.',
-                  bgColor: '#fffbeb',
+                  bgColor: '#fffbf0',
                   comments: []
                 },
                 {
                   number: 3,
                   hook: '💀 Puesto 1: Apocalypse Pepper',
                   concept: 'Imagen dramática del chile fantasma. Advertencia de consumo responsable.',
-                  bgColor: '#fef2f2',
+                  bgColor: '#fff8f6',
                   comments: []
                 },
                 {
@@ -998,9 +1055,9 @@ export default {
       weekDays: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
 
       notifications: [
-        { id: 1, type: 'agency', msg: '🔔 Diseñador subió mockup final para post "Las 3 salsas más picantes".', time: 'Hace 10 min', read: false },
-        { id: 2, type: 'client', msg: '🔔 Cliente solicitó cambios en slide 1 del post de Alitas.', time: 'Hace 1 hora', read: false },
-        { id: 3, type: 'agency', msg: '🔔 Recordatorio: Subir storyboard de Reel para aprobación antes de la sesión.', time: 'Hace 3 horas', read: true }
+        { id: 1, type: 'agency', msg: 'Diseñador subió mockup final para post "Las 3 salsas más picantes".', time: 'Hace 10 min', read: false },
+        { id: 2, type: 'client', msg: 'Cliente solicitó cambios en slide 1 del post de Alitas.', time: 'Hace 1 hora', read: false },
+        { id: 3, type: 'agency', msg: 'Recordatorio: Subir storyboard de Reel para aprobación antes de la sesión.', time: 'Hace 3 horas', read: true }
       ]
     }
   },
@@ -1020,7 +1077,6 @@ export default {
       return '#0d9488';
     },
     clientTabsFiltered() {
-      // Return simple views for Client mode (hiding Nube and Programación if they are in client mode as placeholders)
       return [
         { id: 'resumen', label: '📊 Resumen' },
         { id: 'contenido', label: '👀 Estructura & Mockups' },
@@ -1062,7 +1118,6 @@ export default {
       }, 0);
     },
     getPostsForDay(day) {
-      // Simplified mock calendar matching for multi-brand calendar
       const results = [];
       this.clients.forEach(c => {
         c.posts.forEach(p => {
@@ -1111,11 +1166,10 @@ export default {
         });
         this.newCommentText = '';
         
-        // Simular notificación inmediata
         this.notifications.unshift({
           id: Date.now() + 1,
           type: this.currentViewMode === 'client' ? 'agency' : 'client',
-          msg: `🔔 Nuevo comentario en slide ${this.activeCarouselSlide + 1} de "${this.currentPost.title}"`,
+          msg: `Nuevo comentario en slide ${this.activeCarouselSlide + 1} de "${this.currentPost.title}"`,
           time: 'Ahora mismo',
           read: false
         });
@@ -1123,26 +1177,24 @@ export default {
     },
     changePostStatus(post, newStatus) {
       post.status = newStatus;
-      // Add system notification
       this.notifications.unshift({
         id: Date.now(),
         type: 'agency',
-        msg: `🔔 El post "${post.title}" cambió de estado a: ${newStatus}`,
+        msg: `El post "${post.title}" cambió de estado a: ${newStatus}`,
         time: 'Hace un momento',
         read: false
       });
       alert(`Estado del post modificado a: ${newStatus}`);
     },
     generateBriefPillars() {
-      // Simulate IA processing content pillars
       this.generatedPillarsResult = {
         clientName: this.newBrief.clientName,
         monthlyPosts: this.newBrief.monthlyPosts,
         pillars: [
           { name: 'Producto / Foodporn', percentage: 60, color: 'var(--accent-color)', desc: 'Toma principal del sabor de marca.' },
-          { name: 'Lifestyle / Momentos de Marca', percentage: 10, color: '#3b82f6', desc: 'Convivencia en local físico.' },
-          { name: 'Educativo / Consejos', percentage: 20, color: '#f59e0b', desc: 'Secretos culinarios y recetas.' },
-          { name: 'Venta Directa / Promos', percentage: 10, color: '#8b5cf6', desc: 'Ofertas y combos semanales.' }
+          { name: 'Lifestyle / Momentos de Marca', percentage: 10, color: '#2563eb', desc: 'Convivencia en local físico.' },
+          { name: 'Educativo / Consejos', percentage: 20, color: '#d97706', desc: 'Secretos culinarios y recetas.' },
+          { name: 'Venta Directa / Promos', percentage: 10, color: '#7c3aed', desc: 'Ofertas y combos semanales.' }
         ]
       };
     },
@@ -1162,7 +1214,6 @@ export default {
       
       this.briefsHistory.push(newHistoryItem);
       
-      // Auto-create new Client directory folder node
       this.clients.push({
         id: 'client-' + Date.now(),
         name: this.generatedPillarsResult.clientName,
@@ -1194,7 +1245,6 @@ export default {
     }
   },
   mounted() {
-    // Select first client by default
     if (this.clients.length > 0) {
       this.selectClient(this.clients[0]);
     }
@@ -1210,6 +1260,7 @@ export default {
   height: 100vh;
   background-color: var(--bg-main);
   overflow: hidden;
+  font-family: var(--font-main);
 }
 
 /* System switches topbar */
@@ -1217,7 +1268,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: #ffffff;
   border-bottom: 1px solid var(--border-color);
   z-index: 100;
@@ -1229,24 +1280,26 @@ export default {
   gap: 8px;
 }
 .logo-icon {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
 }
 .logo-text {
-  font-weight: 700;
-  font-size: 1.2rem;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.5px;
   color: var(--text-main);
 }
 .logo-badge {
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  background-color: #f3f4f6;
-  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  background-color: #f4f4f0;
+  border-radius: 99px;
   color: var(--text-muted);
 }
 
 .controls-area {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -1254,23 +1307,27 @@ export default {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .select-input {
-  padding: 6px 10px;
+  padding: 5px 10px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   background-color: #fff;
   cursor: pointer;
+  outline: none;
+  font-weight: 500;
+  color: var(--text-main);
 }
 
 .select-role {
   border-color: var(--accent-color);
-  font-weight: bold;
+  font-weight: 600;
 }
 
 /* Workspace Frame */
@@ -1280,9 +1337,9 @@ export default {
   overflow: hidden;
 }
 
-/* Sidebar styling */
+/* Sidebar styling (Finer and elegant) */
 .sidebar {
-  width: 250px;
+  width: 220px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
   display: flex;
@@ -1291,8 +1348,7 @@ export default {
 }
 
 .sidebar-branding {
-  padding: 16px;
-  border-bottom: 1px solid var(--border-color);
+  padding: 20px 24px;
 }
 
 .brand-logo-container {
@@ -1301,57 +1357,74 @@ export default {
   gap: 8px;
 }
 .brand-bullet {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
 }
 .brand-org-name {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: -0.2px;
 }
 
 .sidebar-menu {
-  padding: 12px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
   flex: 1;
   overflow-y: auto;
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .menu-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   padding: 8px 12px;
   background: none;
   border: none;
   border-radius: 6px;
   text-align: left;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   font-family: inherit;
-  color: var(--text-main);
+  color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 .menu-btn:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(26, 26, 24, 0.03);
+  color: var(--text-main);
 }
 .menu-btn.active {
-  background-color: var(--accent-light);
-  color: var(--accent-color);
+  background-color: #ffffff;
+  color: var(--text-main);
   font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .menu-section-header {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-top: 16px;
-  margin-bottom: 6px;
+  color: #a1a19a;
+  letter-spacing: 0.5px;
   padding-left: 12px;
+  margin-bottom: 2px;
 }
 
 .client-sublist {
@@ -1363,33 +1436,39 @@ export default {
 .client-menu-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   padding: 6px 12px;
   background: none;
   border: none;
   border-radius: 6px;
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 500;
   font-family: inherit;
-  color: var(--text-main);
+  color: var(--text-muted);
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .client-menu-btn:hover {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(26, 26, 24, 0.03);
+  color: var(--text-main);
 }
 .client-menu-btn.active {
-  background-color: var(--accent-light);
-  color: var(--accent-color);
+  background-color: #ffffff;
+  color: var(--text-main);
   font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
 }
 
 .client-avatar {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .badge {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
+  font-weight: 700;
   padding: 2px 6px;
   background-color: var(--accent-color);
   color: #fff;
@@ -1398,9 +1477,9 @@ export default {
 }
 
 .sidebar-user-footer {
-  padding: 16px;
+  padding: 16px 20px;
   border-top: 1px solid var(--border-color);
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(26, 26, 24, 0.01);
 }
 .user-info {
   display: flex;
@@ -1408,182 +1487,331 @@ export default {
   gap: 10px;
 }
 .user-avatar {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 .user-name {
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 0.8rem;
 }
 .user-role-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
 /* Content Area layout */
 .content-body {
   flex: 1;
-  padding: 24px;
+  padding: 32px;
   overflow-y: auto;
 }
 
 .module-view {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 28px;
 }
 
 .view-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
+}
+.view-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent-color);
 }
 .view-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-top: 2px;
 }
 .view-subtitle {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
+  margin-top: 2px;
 }
 
 .metric-summary-pill {
-  font-size: 0.8rem;
-  padding: 4px 10px;
+  font-size: 0.75rem;
+  padding: 4px 12px;
   background-color: var(--accent-light);
   color: var(--accent-color);
-  border-radius: 20px;
-  font-weight: 600;
+  border-radius: 99px;
+  font-weight: 700;
 }
 
 /* General design cards */
 .card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card-title {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 6px;
+  letter-spacing: -0.2px;
 }
 .card-desc {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   margin-bottom: 16px;
 }
 
-/* Grid stats blocks */
-.grid-stats {
+/* EDITORIAL DASHBOARD COMPOSITION */
+.dashboard-editorial-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
 }
 
-.stat-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
+.editorial-main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
-.stat-icon {
-  font-size: 1.5rem;
-  display: block;
-  margin-bottom: 6px;
+
+.editorial-side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
-.stat-val {
-  font-size: 1.8rem;
+
+/* Premium Focus Card */
+.premium-hero-card {
+  border-left: 4px solid var(--accent-color);
+}
+.hero-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.hero-badge {
+  font-size: 0.65rem;
   font-weight: 700;
-}
-.stat-lbl {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-.alert-stat {
-  border-color: #fca5a5;
-  background-color: #fef2f2;
-}
-
-/* Feed Evolution comparison mockup */
-.feed-split-view {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 12px;
-}
-.feed-column {
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 12px;
-  background-color: #fafafa;
-}
-.feed-col-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  text-align: center;
-}
-.title-before {
-  background-color: #f3f4f6;
-  color: #6b7280;
-}
-.title-after {
   background-color: var(--accent-light);
   color: var(--accent-color);
-}
-.mockup-feed-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.feed-item {
-  aspect-ratio: 1;
+  padding: 3px 8px;
   border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.hero-card-header h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-top: 4px;
+  letter-spacing: -0.3px;
+}
+
+.hero-preview-row {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: center;
+}
+
+/* Instagram Miniature Frame */
+.mini-ig-mockup {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.mini-ig-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-bottom: 1px solid #f4f4f0;
+}
+.status-indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.mini-ig-body {
+  aspect-ratio: 1.1;
+  background-color: #fff8f6;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 6px;
+}
+.mini-slide-badge {
+  font-size: 0.65rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-end;
+}
+.mini-slide-content {
+  text-align: center;
+}
+.mini-slide-content strong {
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 6px;
+}
+.mini-slide-content p {
   font-size: 0.7rem;
+  color: var(--text-muted);
 }
-.bg-gray-dark {
-  background-color: #e5e7eb;
-  color: #9ca3af;
-}
-.bg-brand-colored {
-  background-color: var(--accent-light);
-  border: 1px solid var(--accent-color);
+.mini-ig-footer {
+  padding: 8px 12px;
+  font-size: 0.7rem;
   color: var(--accent-color);
-}
-.stats-mini {
-  font-size: 0.6rem;
-  font-weight: bold;
+  background-color: var(--accent-light);
+  font-weight: 600;
+  border-top: 1px solid #f4f4f0;
 }
 
-/* Briefing components */
-.brief-tabs {
-  display: flex;
-  gap: 8px;
-  border-bottom: 1px solid var(--border-color);
+/* Quick Post items */
+.quick-post-item {
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-color);
+}
+.post-type-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.text-carousel { color: #f59e0b; }
+.text-reel { color: #8b5cf6; }
+
+.quick-post-item h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 2px 0;
+}
+.quick-post-item p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.comment-summary-bubble {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fafaf9;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  border-left: 2px solid var(--accent-color);
+}
+
+/* Editorial recent process list */
+.block-title {
+  font-size: 1rem;
+  font-weight: 700;
   margin-bottom: 16px;
 }
-.brief-tab-btn {
-  padding: 8px 16px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  font-family: inherit;
-  font-weight: 500;
-  cursor: pointer;
+.process-checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.brief-tab-btn.active {
-  border-bottom-color: var(--accent-color);
-  color: var(--accent-color);
+.process-item-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f4f4f0;
+}
+.process-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.badge-process { background-color: #fffbeb; color: #d97706; }
+.badge-inprocess { background-color: #eff6ff; color: #2563eb; }
+
+.process-info {
+  flex: 1;
+}
+.process-info strong {
+  font-size: 0.85rem;
+  display: block;
+}
+.process-info p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.process-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
 }
 
+/* Simple KPIs representation */
+.kpi-micro-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.kpi-micro-item {
+  display: flex;
+  flex-direction: column;
+}
+.kpi-micro-item .lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.kpi-micro-item .val {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+/* Sessions card layout */
+.sessions-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.sessions-preview-card .desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.mini-checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mini-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+}
+.mini-checklist li input {
+  margin-top: 3px;
+}
+
+/* Brief Promos card */
+.brief-action-promo h4 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.brief-action-promo p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Form layout */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1599,15 +1827,21 @@ export default {
   gap: 6px;
 }
 .form-label {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
 .form-control {
   padding: 8px 12px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-control:focus {
+  border-color: var(--accent-color);
 }
 
 .form-actions {
@@ -1620,10 +1854,11 @@ export default {
   padding: 8px 16px;
   border-radius: 6px;
   font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 .btn-primary {
   background-color: var(--accent-color);
@@ -1638,54 +1873,69 @@ export default {
   color: var(--text-main);
 }
 .btn-secondary:hover {
-  background-color: #f9f9f9;
+  background-color: #fcfcfc;
 }
 .btn-success {
-  background-color: #10b981;
+  background-color: var(--status-approved);
   color: #fff;
 }
 .btn-warning {
-  background-color: #f59e0b;
+  background-color: var(--status-ready);
   color: #fff;
 }
 .btn-sm {
-  padding: 4px 8px;
-  font-size: 0.8rem;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+}
+.btn-xs {
+  padding: 3px 8px;
+  font-size: 0.7rem;
 }
 
-/* AI Pillars visual result section */
+/* AI Pillars visual result section (Bars, Chips, Percentages) */
 .ai-pillars-result {
-  margin-top: 24px;
-  padding-top: 20px;
+  margin-top: 28px;
+  padding-top: 24px;
   border-top: 1px dashed var(--border-color);
 }
 .pillars-title {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 16px;
 }
 .pillars-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 28px;
 }
 .pillar-chart-bar {
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
-.bar-label {
+.bar-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.bar-name-chip {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding-left: 8px;
+}
+.bar-percentage {
   font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-weight: 800;
 }
 .bar-track {
-  height: 8px;
-  background-color: #f3f4f6;
-  border-radius: 4px;
+  height: 6px;
+  background-color: #f4f4f0;
+  border-radius: 99px;
   overflow: hidden;
   margin-bottom: 4px;
 }
 .bar-fill {
   height: 100%;
+  border-radius: 99px;
 }
 .pillar-desc {
   font-size: 0.75rem;
@@ -1694,139 +1944,40 @@ export default {
 .pillars-summary-card {
   background-color: var(--bg-sidebar);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 16px;
 }
-
-/* Brief History list */
-.brief-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.history-brief-item {
-  padding: 16px;
-}
-.history-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.pillars-summary-card h5 {
+  font-size: 0.85rem;
+  font-weight: 700;
   margin-bottom: 8px;
 }
-.history-date {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-.badge-neutral {
-  background-color: #f3f4f6;
-  color: var(--text-main);
-}
-.history-desc {
-  font-size: 0.85rem;
-  margin-bottom: 12px;
-}
-.history-pillars-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.pillar-tag {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  padding: 4px 8px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: #fff;
-}
-.tag-color-bullet {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-/* Repositorio de Marca */
-.grid-repo {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.repo-card-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-color);
-}
-.repo-body-links {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.repo-item-link {
-  font-size: 0.8rem;
-  color: var(--accent-color);
-  cursor: pointer;
-}
-
-/* Notifications module */
-.notifications-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.col-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-.notifications-list {
+.monthly-list {
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 12px;
 }
-.notif-item {
-  background-color: #fff;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.notif-item.unread {
-  border-left: 3px solid var(--accent-color);
-  background-color: var(--accent-light);
-}
-.notif-header {
+.monthly-list li {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  gap: 8px;
+  font-size: 0.75rem;
 }
-.notif-bullet {
+.monthly-list li .bullet {
   width: 6px;
   height: 6px;
-  background-color: var(--accent-color);
   border-radius: 50%;
 }
-.notif-time {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-.notif-msg {
-  font-size: 0.85rem;
-}
 
-/* CLIENT SPECIFIC MODULE VIEWS */
+/* Client Detail Layout */
 .client-detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 16px;
-  margin-bottom: 16px;
 }
 .client-logo-title {
   display: flex;
@@ -1834,14 +1985,14 @@ export default {
   gap: 12px;
 }
 .client-detail-avatar {
-  font-size: 2.2rem;
+  font-size: 2rem;
 }
 .client-detail-name {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
 }
 .client-detail-niche {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
@@ -1849,7 +2000,6 @@ export default {
   display: flex;
   gap: 4px;
   border-bottom: 1px solid var(--border-color);
-  margin-bottom: 20px;
 }
 .client-tab-btn {
   padding: 8px 16px;
@@ -1857,81 +2007,54 @@ export default {
   border: none;
   border-bottom: 2px solid transparent;
   font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
+  transition: all 0.2s;
 }
 .client-tab-btn.active {
   border-bottom-color: var(--accent-color);
   color: var(--accent-color);
-  font-weight: 600;
 }
 
-/* Subtab: Resumen */
-.grid-resumen {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
-}
-.resumen-metrics {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.metric-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.metric-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-.metric-value {
-  font-size: 1.2rem;
-}
-.pilars-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-/* Subtab: Contenido - Visual grid with sidebar */
+/* Post list sidebar & viewer grid */
 .contenido-grid {
   display: grid;
   grid-template-columns: 240px 1fr;
-  gap: 20px;
+  gap: 24px;
 }
 .contenido-sidebar {
-  padding: 12px;
+  padding: 16px;
 }
 .sidebar-title {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #a1a19a;
   margin-bottom: 12px;
-  color: var(--text-muted);
 }
 .posts-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 .post-list-btn {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 10px;
-  background-color: #fafafa;
+  padding: 12px;
+  background-color: #fafaf9;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: left;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 .post-list-btn:hover {
-  background-color: #f3f4f6;
+  background-color: #f4f4f0;
 }
 .post-list-btn.active {
   background-color: var(--accent-light);
@@ -1941,34 +2064,29 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  width: 100%;
 }
 .post-type-tag {
-  font-size: 0.7rem;
-  font-weight: bold;
-  text-transform: uppercase;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   color: var(--text-muted);
 }
 .post-status-bullet {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
 }
 .post-btn-title {
   font-size: 0.8rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-.post-btn-date {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-weight: 700;
   margin-top: 4px;
 }
 
 .contenido-viewer {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .viewer-header {
@@ -1977,35 +2095,29 @@ export default {
   align-items: center;
 }
 .post-main-details h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-top: 4px;
+  font-size: 1.15rem;
+  font-weight: 800;
 }
 .post-meta-text {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
 
-.post-action-buttons {
-  display: flex;
-  gap: 8px;
-}
-
 /* CAROUSEL INSTAGRAM FRAME MOCKUP */
 .carousel-visual-editor {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 24px;
 }
 
 .instagram-frame {
-  max-width: 320px;
+  max-width: 300px;
   background-color: #fff;
   border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
   margin: 0 auto;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .ig-header {
@@ -2013,7 +2125,7 @@ export default {
   align-items: center;
   padding: 10px;
   gap: 8px;
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid #f4f4f0;
 }
 .ig-avatar {
   font-size: 1rem;
@@ -2023,17 +2135,12 @@ export default {
   flex-direction: column;
 }
 .ig-username {
-  font-weight: 600;
-  font-size: 0.8rem;
+  font-weight: 700;
+  font-size: 0.75rem;
 }
 .ig-location {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--text-muted);
-}
-.ig-dots {
-  margin-left: auto;
-  color: #8e8e8e;
-  font-size: 0.8rem;
 }
 
 .ig-slide-body {
@@ -2042,13 +2149,14 @@ export default {
 }
 .slide-indicator {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
+  top: 8px;
+  right: 8px;
+  background-color: rgba(26, 26, 24, 0.8);
   color: #fff;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   padding: 2px 6px;
-  border-radius: 10px;
+  border-radius: 99px;
+  font-weight: 700;
 }
 .slide-designer-canvas {
   width: 100%;
@@ -2057,23 +2165,26 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
 }
 .slide-canvas-hook {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
   margin-bottom: 8px;
+  letter-spacing: -0.2px;
+  color: var(--text-main);
 }
 .slide-canvas-concept {
   font-size: 0.8rem;
-  color: #4b5563;
+  color: var(--text-muted);
 }
 .slide-bottom-guide {
   margin-top: auto;
-  font-size: 0.65rem;
-  color: #9ca3af;
+  font-size: 0.6rem;
+  color: #a1a19a;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .ig-footer-actions {
@@ -2081,20 +2192,20 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #efefef;
+  border-top: 1px solid #f4f4f0;
 }
 .ig-action-icons {
   display: flex;
   gap: 12px;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 .ig-carousel-dots {
   display: flex;
   gap: 4px;
 }
 .ig-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background-color: #dbdbdb;
   border-radius: 50%;
 }
@@ -2110,331 +2221,71 @@ export default {
   margin-top: 16px;
 }
 .slide-indicator-label {
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-/* Feedback panel */
+/* Feedback panel comments list */
+.carousel-feedback-column {
+  display: flex;
+  flex-direction: column;
+}
+.feedback-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.feedback-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
 .comments-scroller {
-  height: 150px;
+  height: 180px;
   overflow-y: auto;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 8px;
+  border-radius: 8px;
+  padding: 10px;
   margin-bottom: 12px;
-  background-color: #fafafa;
+  background-color: #fafaf9;
 }
 .comment-bubble {
   background-color: #fff;
   border: 1px solid var(--border-color);
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
 }
 .comment-author {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   margin-bottom: 2px;
 }
-.comment-role {
-  color: var(--text-muted);
-}
 .comment-text {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
-/* REEL STORYBOARD */
+/* REELS Storyboard style */
 .reel-details-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
-.info-card h5 {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.info-card p {
-  font-size: 0.85rem;
-}
-.pinterest-ref-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.ref-link {
-  color: var(--accent-color);
-  text-decoration: underline;
-  font-size: 0.8rem;
-}
 
-.simple-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-.simple-table th, .simple-table td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.85rem;
-}
-.simple-table th {
-  font-weight: 600;
-  background-color: #f9f9fb;
-}
-
-/* STORIES GRID */
-.stories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-}
-.story-preview-card {
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.story-preview-bg {
-  aspect-ratio: 9/16;
-  background-color: #fffbeb;
-  border: 1px dashed var(--accent-color);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 12px;
-}
-.story-category-badge {
-  font-size: 0.65rem;
-  background-color: var(--accent-color);
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 4px;
-  align-self: flex-start;
-}
-.story-hook {
-  font-size: 0.85rem;
-  font-weight: bold;
-  text-align: center;
-}
-.story-card-meta p {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.upload-zone {
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  padding: 30px;
-  text-align: center;
-  background-color: #fafafa;
-  cursor: pointer;
-}
-.upload-placeholder {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* CALENDARIO SUBTAB */
-.calendar-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-.calendar-legend {
-  display: flex;
-  gap: 12px;
-  font-size: 0.8rem;
-}
-.leg-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.bullet {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.client-calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-.calendar-cell {
-  padding: 12px;
-}
-.cell-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.cell-date {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-.cell-status-bullet {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.cell-type {
-  font-size: 0.65rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.cell-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-/* SESIONES */
-.sesiones-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.sesion-col {
-  padding: 16px;
-}
-.col-title-primary {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-.col-subtitle {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-.session-block {
-  border-left: 3px solid var(--accent-color);
-  padding-left: 12px;
-}
-.session-category-header {
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-}
-.session-card-details p {
-  font-size: 0.8rem;
-  margin-bottom: 4px;
-}
-
-.checklist-shop-card {
-  grid-column: span 2;
-  padding: 16px;
-}
-.checklist-items-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+/* Checklist Row Style */
 .checklist-item-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: background-color 0.2s;
 }
 .checklist-item-row.checked {
   background-color: #f0fdf4;
   border-color: #bbf7d0;
-}
-.checklist-label-text {
-  font-size: 0.85rem;
-}
-
-/* CLOUD STORAGE */
-.cloud-folder-tree {
-  margin-top: 12px;
-}
-.folder-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  padding: 8px 0;
-}
-.folder-contents {
-  padding-left: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.file-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  padding: 4px 8px;
-  background-color: #fafafa;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-}
-.file-size {
-  color: var(--text-muted);
-}
-
-/* CROSS CALENDAR MATRIX */
-.cross-calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-}
-.cross-cal-day {
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  min-height: 250px;
-  background-color: #fafafa;
-  display: flex;
-  flex-direction: column;
-}
-.cross-day-header {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 6px;
-  background-color: #fff;
-  border-bottom: 1px solid var(--border-color);
-}
-.cross-day-posts-container {
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  overflow-y: auto;
-}
-.cross-post-pill {
-  border-left: 3px solid transparent;
-  background-color: #fff;
-  border-top: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 6px;
-  font-size: 0.75rem;
-}
-.cross-post-brand {
-  font-weight: bold;
-  display: block;
-  font-size: 0.7rem;
-}
-.cross-post-type {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.cross-post-title {
-  display: block;
-  font-weight: 500;
 }
 
 /* Global utility */
@@ -2442,4 +2293,6 @@ export default {
 .mt-4 { margin-top: 16px; }
 .ml-2 { margin-left: 8px; }
 .text-center { text-align: center; }
+.w-100 { width: 100%; }
+.mt-auto { margin-top: auto; }
 </style>
